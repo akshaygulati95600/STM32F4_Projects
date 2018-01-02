@@ -1,0 +1,174 @@
+#include <STM32F4XX.H>
+#include <STM32F4XX_RCC.H>
+#include <STM32F4XX_SPI.H>
+#include <STM32F4XX_GPIO.H>
+#include <STM32F4XX_USART.H>
+
+uint8_t i;
+uint8_t MSB_X, LSB_X, MSB_Z, LSB_Z;
+
+__IO uint32_t TimmingDelay;
+
+void LIS3DSH_GPIO_Configure()
+{
+	 GPIO_InitTypeDef GPIO_InitStructure;
+
+	 RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
+	 RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE , ENABLE);
+
+	 GPIO_InitStructure.GPIO_Pin  = GPIO_Pin_5|GPIO_Pin_6|GPIO_Pin_7;
+	 GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF;
+	 GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	 GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	 GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+	 GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+	 GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_3;
+	 GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
+	 GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	 GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
+	 GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	 GPIO_Init(GPIOE, &GPIO_InitStructure);
+
+	 GPIO_PinAFConfig(GPIOA, GPIO_PinSource5, GPIO_AF_SPI1);
+	 GPIO_PinAFConfig(GPIOA, GPIO_PinSource6, GPIO_AF_SPI1);
+	 GPIO_PinAFConfig(GPIOA, GPIO_PinSource7, GPIO_AF_SPI1);
+
+	 GPIO_SetBits(GPIOE, GPIO_Pin_3);
+}
+
+void LIS3DSH_SPI_Configure()
+{
+	SPI_InitTypeDef SPI_InitStructure;
+
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE);
+
+	SPI_InitStructure.SPI_Direction         = SPI_Direction_2Lines_FullDuplex;
+	SPI_InitStructure.SPI_Mode              = SPI_Mode_Master;
+	SPI_InitStructure.SPI_DataSize          = SPI_DataSize_8b;
+	SPI_InitStructure.SPI_CPOL              = SPI_CPOL_High;
+	SPI_InitStructure.SPI_CPHA              = SPI_CPHA_2Edge;
+	SPI_InitStructure.SPI_NSS               = SPI_NSS_Soft | SPI_NSSInternalSoft_Set;
+	SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_256;
+	SPI_InitStructure.SPI_FirstBit          = SPI_FirstBit_MSB;
+	SPI_Init(SPI1, &SPI_InitStructure);
+	SPI_Cmd(SPI1, ENABLE);
+
+	LIS3DSH_SPI_Send(0x20, 0x67);
+	LIS3DSH_SPI_Send(0x24, 0x20);
+}
+
+void LIS3DSH_SPI_Send(uint8_t Address, uint8_t Data)
+{
+  GPIO_ResetBits(GPIOE, GPIO_Pin_3);
+
+  while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET);
+  SPI_I2S_SendData(SPI1, Address);
+  while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE) == RESET);
+  SPI_I2S_ReceiveData(SPI1);
+
+  while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET);
+  SPI_I2S_SendData(SPI1, Data);
+  while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE) == RESET);
+  SPI_I2S_ReceiveData(SPI1);
+
+  GPIO_SetBits(GPIOE, GPIO_Pin_3);
+}
+
+uint8_t LIS3DSH_SPI_Read(uint8_t Address)
+{
+  GPIO_ResetBits(GPIOE, GPIO_Pin_3);
+  Address = 0x80|Address;
+
+  while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET);
+  SPI_I2S_SendData(SPI1, Address);
+  while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE) == RESET);
+  SPI_I2S_ReceiveData(SPI1);
+
+  while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET);
+  SPI_I2S_SendData(SPI1, 0x00);
+  while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE) == RESET);
+
+  GPIO_SetBits(GPIOE, GPIO_Pin_3);
+
+  return SPI_I2S_ReceiveData(SPI1);
+}
+
+void UART_GPIO_Configure()
+{
+	GPIO_InitTypeDef GPIO_InitStructure;
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
+
+	GPIO_PinAFConfig(GPIOC, GPIO_PinSource10, GPIO_AF_USART3);
+	GPIO_PinAFConfig(GPIOC, GPIO_PinSource11, GPIO_AF_USART3);
+
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10|GPIO_Pin_11;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+	GPIO_Init(GPIOC, &GPIO_InitStructure);
+}
+
+void UART_Configure()
+{
+	USART_InitTypeDef USART_InitStructure;
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
+
+	USART_InitStructure.USART_BaudRate = 9600;
+	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
+	USART_InitStructure.USART_StopBits = USART_StopBits_1;
+	USART_InitStructure.USART_Parity = USART_Parity_No;
+	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+	USART_InitStructure.USART_Mode = USART_Mode_Tx;
+	USART_Init(USART3, &USART_InitStructure);
+	USART_Cmd(USART3, ENABLE);
+}
+
+void UART_Send_Character(char Data)
+{
+	while (!USART_GetFlagStatus(USART3, USART_FLAG_TXE));
+	USART3->DR = Data;
+}
+
+
+void Delay(__IO uint32_t time)
+{
+  TimmingDelay = time;
+  while(TimmingDelay !=0);
+}
+
+void SysTick_Handler(void)
+{
+  if(TimmingDelay !=0)
+  {
+    TimmingDelay --;
+   }
+}
+
+int main(void)
+{
+	SystemInit();
+	SysTick_Config(SystemCoreClock/1000);
+
+	LIS3DSH_GPIO_Configure();
+	LIS3DSH_SPI_Configure();
+	UART_GPIO_Configure();
+	UART_Configure();
+
+	while(1)
+	{
+		MSB_X = LIS3DSH_SPI_Read(0x29);
+		LSB_X = LIS3DSH_SPI_Read(0x28);
+		MSB_Z = LIS3DSH_SPI_Read(0x2D);
+		LSB_Z = LIS3DSH_SPI_Read(0x2C);
+		UART_Send_Character(MSB_X);
+		UART_Send_Character(LSB_X);
+		UART_Send_Character(MSB_Z);
+		UART_Send_Character(LSB_Z);
+
+		Delay(10);
+
+	}
+}
+

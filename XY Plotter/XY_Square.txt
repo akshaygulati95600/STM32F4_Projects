@@ -1,0 +1,214 @@
+#include <STM32F4XX.H>
+#include <STM32F4XX_RCC.H>
+#include <STM32F4XX_TIM.H>
+#include <STM32F4XX_GPIO.H>
+
+#define Pi 			3.14159265358979
+#define L1			19.2
+#define L2			13.5
+
+#define Offset		499
+#define Step		5
+#define Resolution	0.45
+
+#define Laser_On	GPIOE->BSRRL = GPIO_Pin_10
+#define Laser_Off	GPIOE->BSRRH = GPIO_Pin_10
+
+__IO uint32_t TimmingDelay;
+
+float Theta_1,Theta_2,Theta_Gamma,L;
+
+void Servo_GPIO_Configure()
+{
+	GPIO_InitTypeDef GPIO_InitStructure;
+    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);
+
+	GPIO_PinAFConfig(GPIOE, GPIO_PinSource9,  GPIO_AF_TIM1);
+	GPIO_PinAFConfig(GPIOE, GPIO_PinSource11, GPIO_AF_TIM1);
+
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9|GPIO_Pin_11;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+    GPIO_Init(GPIOE, &GPIO_InitStructure);
+
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
+    GPIO_Init(GPIOE, &GPIO_InitStructure);
+}
+
+void Servo_Timer_Configure()
+{
+	TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure;
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
+
+	TIM_TimeBaseInitStructure.TIM_Period = 19999;
+	TIM_TimeBaseInitStructure.TIM_Prescaler = 167;
+	TIM_TimeBaseInitStructure.TIM_CounterMode = TIM_CounterMode_Up;
+	TIM_TimeBaseInitStructure.TIM_ClockDivision = 0;
+	TIM_TimeBaseInitStructure.TIM_RepetitionCounter = 0;
+    TIM_TimeBaseInit(TIM1, &TIM_TimeBaseInitStructure);
+    TIM_Cmd(TIM1, ENABLE);
+}
+
+void Servo_PWM_Configure()
+{
+	TIM_OCInitTypeDef TIM_OCInitStructure;
+	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM2;
+	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
+	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_Low;
+
+	TIM_OCInitStructure.TIM_Pulse = 499;
+	TIM_OC1Init(TIM1, &TIM_OCInitStructure);
+	TIM_OC1PreloadConfig(TIM1, TIM_OCPreload_Enable);
+
+	TIM_OCInitStructure.TIM_Pulse = 499;
+	TIM_OC2Init(TIM1, &TIM_OCInitStructure);
+	TIM_OC2PreloadConfig(TIM1, TIM_OCPreload_Enable);
+
+	TIM_OCInitStructure.TIM_Pulse = 499;
+	TIM_OC3Init(TIM1, &TIM_OCInitStructure);
+	TIM_OC3PreloadConfig(TIM1, TIM_OCPreload_Enable);
+
+	TIM_CtrlPWMOutputs(TIM1, ENABLE);
+}
+
+void Servo_Go_Degree(float Angle, uint8_t Servo)
+{
+	uint16_t Pulse;
+	if(Servo == 0)
+	{
+		Pulse = (uint16_t)((Angle*Step)/Resolution + Offset);
+		TIM_SetCompare1(TIM1, Pulse);
+	}
+
+	else if(Servo == 1)
+	{
+		Pulse = (uint16_t)((Angle*Step)/Resolution + Offset);
+		TIM_SetCompare2(TIM1, Pulse);
+	}
+}
+
+void Inverse_Kinematics_XY(float X, float Y)
+{
+	L = sqrtf(pow(X,2) + pow(Y,2));
+
+	Theta_Gamma = acosf((pow(X,2) + pow(Y,2) + pow(L1,2) - pow(L2,2))/(2*L1*L));
+
+	Theta_1 = atanf(Y/X) - Theta_Gamma;
+
+	Theta_2 = acosf((pow(X,2) + pow(Y,2) - pow(L1,2) - pow(L2,2))/(2*L1*L2));
+
+	Theta_1 = Theta_1*180/Pi;
+	Theta_2 = Theta_2*180/Pi;
+
+}
+
+void Go_Point_XY(float X, float Y)
+{
+	uint8_t i;
+	Inverse_Kinematics_XY(X, Y);
+
+	Servo_Go_Degree(Theta_1,0);
+	Servo_Go_Degree(Theta_2,1);
+}
+
+void Go_Line_L1(float X1, float Y1, float X2, float Y2, uint16_t Delay_Time, float Steps)
+{
+	float Index = 0;
+	float Slope = 0;
+	float dX = 0, dY = 0;
+	float X_Temp = 0, Y_Temp = 0;
+
+	if((X2-X1) == 0)
+	{
+		Slope = (Y2 - Y1)/0.00001;
+	}
+
+	else
+	{
+		Slope = (Y2 - Y1)/(X2 - X1);
+	}
+
+	dX = sqrtf(pow((X2 - X1),2) + pow((Y2 - Y1),2)) /( sqrtf(1 + (pow(Slope,2))) * Steps);
+	dY = Slope*dX;
+
+	X_Temp = X1 + dX;
+	Y_Temp = X2 + dY;
+
+	Laser_On;
+	Go_Point_XY(X1,Y1);
+
+	while(Index!=Steps)
+	{
+		X_Temp = X_Temp + dX;
+		Y_Temp = Y_Temp + dY;
+		Go_Point_XY(X_Temp,Y_Temp);
+		Delay(Delay_Time);
+		Index++;
+	}
+}
+
+void Delay(__IO uint32_t time)
+{
+  TimmingDelay = time;
+  while(TimmingDelay !=0);
+}
+
+void SysTick_Handler(void)
+{
+  if(TimmingDelay !=0)
+  {
+    TimmingDelay --;
+   }
+}
+
+int main(void)
+{
+	SystemInit();
+	Servo_GPIO_Configure();
+	Servo_Timer_Configure();
+	Servo_PWM_Configure();
+
+	SysTick_Config(SystemCoreClock/1000);
+	Laser_On;
+	float i = 12;
+
+	while(i>=10)
+	{
+		Go_Point_XY(0,i);
+		i= i-0.1;
+		Delay(1550);
+	}
+
+	i = 0;
+
+	while(i<=2)
+	{
+		Go_Point_XY(i,10);
+		i=i+0.1;
+		Delay(1550);
+	}
+
+	i = 10;
+
+	while(i<=12)
+	{
+		Go_Point_XY(2,i);
+		i=i+0.1;
+		Delay(1550);
+	}
+
+	i = 2;
+
+	while(i>=0)
+	{
+		Go_Point_XY(i,12);
+		i=i-0.1;
+		Delay(1550);
+	}
+}

@@ -1,0 +1,255 @@
+#include <STM32F4XX.H>
+#include <STM32F4XX_RCC.H>
+#include <STM32F4XX_SPI.H>
+#include <STM32F4XX_GPIO.H>
+#include <STM32F4XX_USART.H>
+
+#define Sample_Count 100
+
+uint8_t MSB_X, LSB_X, MSB_Y, LSB_Y, MSB_Z, LSB_Z;
+
+int16_t X_i,Y_i,Z_i;
+uint16_t Xc_i,Xc_f,Yc_i,Yc_f;
+int16_t X_Array[Sample_Count],Y_Array[Sample_Count],Z_Array[Sample_Count];
+
+float Pitch_i = 0,Pitch_f = 0,Roll_i = 0,Roll_f = 0;
+float X_Average = 0, Y_Average = 0, Z_Average = 0;
+
+__IO uint32_t TimingDelay;
+
+void LIS3DSH_GPIO_Configure()
+{
+	 GPIO_InitTypeDef GPIO_InitStructure;
+
+	 RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
+	 RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE , ENABLE);
+
+	 GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_5|GPIO_Pin_6|GPIO_Pin_7;
+	 GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF;
+	 GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	 GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	 GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+	 GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+	 GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_3;
+	 GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
+	 GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	 GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
+	 GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	 GPIO_Init(GPIOE, &GPIO_InitStructure);
+
+	 GPIO_PinAFConfig(GPIOA, GPIO_PinSource5, GPIO_AF_SPI1);
+	 GPIO_PinAFConfig(GPIOA, GPIO_PinSource6, GPIO_AF_SPI1);
+	 GPIO_PinAFConfig(GPIOA, GPIO_PinSource7, GPIO_AF_SPI1);
+
+	 GPIO_SetBits(GPIOE, GPIO_Pin_3);
+}
+
+void LIS3DSH_SPI_Configure()
+{
+	SPI_InitTypeDef SPI_InitStructure;
+
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE);
+
+	SPI_InitStructure.SPI_Direction         = SPI_Direction_2Lines_FullDuplex;
+	SPI_InitStructure.SPI_Mode              = SPI_Mode_Master;
+	SPI_InitStructure.SPI_DataSize          = SPI_DataSize_8b;
+	SPI_InitStructure.SPI_CPOL              = SPI_CPOL_High;
+	SPI_InitStructure.SPI_CPHA              = SPI_CPHA_2Edge;
+	SPI_InitStructure.SPI_NSS               = SPI_NSS_Soft | SPI_NSSInternalSoft_Set;
+	SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_256;
+	SPI_InitStructure.SPI_FirstBit          = SPI_FirstBit_MSB;
+	SPI_Init(SPI1, &SPI_InitStructure);
+	SPI_Cmd(SPI1, ENABLE);
+
+	LIS3DSH_SPI_Send(0x20, 0x67);
+	LIS3DSH_SPI_Send(0x24, 0x20);
+}
+
+void LIS3DSH_SPI_Send(uint8_t Address, uint8_t Data)
+{
+	GPIO_ResetBits(GPIOE, GPIO_Pin_3);
+
+	while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET);
+	SPI_I2S_SendData(SPI1, Address);
+	while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE) == RESET);
+	SPI_I2S_ReceiveData(SPI1);
+
+	while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET);
+	SPI_I2S_SendData(SPI1, Data);
+	while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE) == RESET);
+	SPI_I2S_ReceiveData(SPI1);
+
+	GPIO_SetBits(GPIOE, GPIO_Pin_3);
+}
+
+uint8_t LIS3DSH_SPI_Read(uint8_t Address)
+{
+	GPIO_ResetBits(GPIOE, GPIO_Pin_3);
+	Address = 0x80|Address;
+
+	while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET);
+	SPI_I2S_SendData(SPI1, Address);
+	while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE) == RESET);
+	SPI_I2S_ReceiveData(SPI1);
+
+	while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET);
+	SPI_I2S_SendData(SPI1, 0x00);
+	while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE) == RESET);
+
+	GPIO_SetBits(GPIOE, GPIO_Pin_3);
+
+	return SPI_I2S_ReceiveData(SPI1);
+}
+
+void UART_GPIO_Configure()
+{
+	GPIO_InitTypeDef GPIO_InitStructure;
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
+
+	GPIO_PinAFConfig(GPIOC, GPIO_PinSource10, GPIO_AF_USART3);
+	GPIO_PinAFConfig(GPIOC, GPIO_PinSource11, GPIO_AF_USART3);
+
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10|GPIO_Pin_11;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+	GPIO_Init(GPIOC, &GPIO_InitStructure);
+}
+
+void UART_Configure()
+{
+	USART_InitTypeDef USART_InitStructure;
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
+
+	USART_InitStructure.USART_BaudRate = 9600;
+	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
+	USART_InitStructure.USART_StopBits = USART_StopBits_1;
+	USART_InitStructure.USART_Parity = USART_Parity_No;
+	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+	USART_InitStructure.USART_Mode = USART_Mode_Tx;
+	USART_Init(USART3, &USART_InitStructure);
+	USART_Cmd(USART3, ENABLE);
+}
+
+void UART_Send_Character(char Data)
+{
+	while (!USART_GetFlagStatus(USART3, USART_FLAG_TXE));
+	USART3->DR = Data;
+}
+
+
+void Delay(__IO uint32_t Time)
+{
+  TimingDelay = Time;
+  while(TimingDelay !=0);
+}
+
+void SysTick_Handler(void)
+{
+  if(TimingDelay !=0)
+  {
+    TimingDelay --;
+   }
+}
+
+void Insertion_Sort_MinMax(int16_t A[])
+{
+  uint8_t i = 0;
+  uint8_t status = 1;
+
+  while(status == 1)
+  {
+    status = 0;
+    for(i = 0; i < Sample_Count-1; i++)
+    {
+      if (A[i] > A[i+1])
+      {
+        A[i]^=A[i+1];
+        A[i+1]^=A[i];
+        A[i]^=A[i+1];
+        status = 1;
+      }
+    }
+  }
+}
+
+void Angle_Conversion()
+{
+	Pitch_f = atan(X_Average/sqrt(pow(Y_Average,2) + pow(Z_Average,2)));
+	Roll_f = atan(Y_Average/sqrt(pow(X_Average,2) + pow(Z_Average,2)));
+
+	Pitch_f = (Pitch_f/3.14159)*180;
+	Roll_f = (Roll_f/3.14159)*180;
+}
+
+int main(void)
+{
+	SystemInit();
+	SysTick_Config(SystemCoreClock/1000);
+
+	LIS3DSH_GPIO_Configure();
+	LIS3DSH_SPI_Configure();
+
+	UART_GPIO_Configure();
+	UART_Configure();
+
+	uint16_t i = 0;
+
+	while(1)
+	{
+		for(i=0;i<Sample_Count;i++)
+	    {
+	      MSB_X = LIS3DSH_SPI_Read(0x29);
+	      LSB_X = LIS3DSH_SPI_Read(0x28);
+	      MSB_Y = LIS3DSH_SPI_Read(0x2B);
+	      LSB_Y = LIS3DSH_SPI_Read(0x2A);
+	      MSB_Z = LIS3DSH_SPI_Read(0x2D);
+	      LSB_Z = LIS3DSH_SPI_Read(0x2C);
+
+	      X_i = (MSB_X << 8) | (LSB_X);
+	      Y_i = (MSB_Y << 8) | (LSB_Y);
+	      Z_i = (MSB_Z << 8) | (LSB_Z);
+
+	      X_Array[i] = X_i;
+	      Y_Array[i] = Y_i;
+	      Z_Array[i] = Z_i;
+
+	    }
+
+
+		Insertion_Sort_MinMax(X_Array);
+		Insertion_Sort_MinMax(Y_Array);
+		Insertion_Sort_MinMax(Z_Array);
+
+		X_Average = 0;
+		Y_Average = 0;
+		Z_Average = 0;
+
+	    for(i=(Sample_Count/10); i<((Sample_Count - (Sample_Count/10))); i++)
+	    {
+	      X_Average = X_Average + X_Array[i];
+	      Y_Average = Y_Average + Y_Array[i];
+	      Z_Average = Z_Average + Z_Array[i];
+	    }
+
+	    X_Average = X_Average/(Sample_Count - (Sample_Count/5));
+	    Y_Average = Y_Average/(Sample_Count - (Sample_Count/5));
+	    Z_Average = Z_Average/(Sample_Count - (Sample_Count/5));
+
+	    Angle_Conversion();
+
+	    Xc_f = (Pitch_f - 66)*16;
+	    Yc_f = (23 - Roll_f)*56;
+
+		UART_Send_Character((Xc_f)>>8);
+		UART_Send_Character((Xc_f));
+		UART_Send_Character((Yc_f)>>8);
+		UART_Send_Character((Yc_f));
+
+		Delay(50);
+
+	}
+}
+

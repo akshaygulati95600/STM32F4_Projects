@@ -1,0 +1,599 @@
+#include <STM32F4XX.H>
+#include <STM32F4XX_RCC.H>
+#include <STM32F4XX_I2C.H>
+#include <STM32F4XX_DMA.H>
+#include <STM32F4XX_DCMI.H>
+#include <STM32F4XX_GPIO.H>
+#include <MISC.H>
+
+#define ONE_BYTE_Address_Register 0x01
+#define TWO_BYTE_Address_Register 0x02
+
+void OV7670_GPIO_Configure(void)
+{
+	GPIO_InitTypeDef GPIO_InitStructure;
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+
+	GPIO_PinAFConfig(GPIOB, GPIO_PinSource8, GPIO_AF_I2C1);
+	GPIO_PinAFConfig(GPIOB, GPIO_PinSource9, GPIO_AF_I2C1);
+
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8 | GPIO_Pin_9;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+	GPIO_Init(GPIOB, &GPIO_InitStructure);
+}
+
+void OV7670_I2C_Configure(void)
+{
+	I2C_InitTypeDef I2C_InitStructure;
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_I2C1, ENABLE);
+
+	I2C_StructInit(&I2C_InitStructure);
+	I2C_DeInit(I2C1);
+
+	I2C_Cmd(I2C1, ENABLE);
+	I2C_InitStructure.I2C_Mode = I2C_Mode_I2C;
+	I2C_InitStructure.I2C_DutyCycle = I2C_DutyCycle_2;
+	I2C_InitStructure.I2C_OwnAddress1 = 0x00;
+	I2C_InitStructure.I2C_Ack = I2C_Ack_Enable;
+	I2C_InitStructure.I2C_AcknowledgedAddress = I2C_AcknowledgedAddress_7bit;
+	I2C_InitStructure.I2C_ClockSpeed = 100000;
+	I2C_ITConfig(I2C1, I2C_IT_ERR, ENABLE);
+	I2C_Init(I2C1,&I2C_InitStructure);
+	I2C_Cmd(I2C1, ENABLE);
+
+}
+
+int OV7670_I2C_Write(uint8_t Address_Slave, uint16_t Address_Register, uint8_t* Data, uint8_t Length)
+{
+	uint32_t Timeout = 0x7FFFFF;
+	uint8_t Error_Type = 0;
+
+	I2C_GenerateSTART(I2C1, ENABLE);
+	while( !I2C_CheckEvent(I2C1,I2C_EVENT_MASTER_MODE_SELECT));
+	{
+		if ((Timeout--) == 0)
+		{
+			Error_Type = 1;
+			goto exit;
+		}
+	}
+
+	I2C_Send7bitAddress(I2C1, Address_Slave, I2C_Direction_Transmitter);
+	while(!(I2C1->SR1 & (1 << 1)));
+	{
+		if ((Timeout--) == 0)
+		{
+			Error_Type = 2;
+			goto exit;
+		}
+	}
+
+	while(!(I2C1->SR2 & (1 << 2)));
+	{
+		if ((Timeout--) == 0)
+		{
+			Error_Type = 3;
+			goto exit;
+		}
+	}
+
+	if(Length == TWO_BYTE_Address_Register)
+	{
+		I2C_SendData(I2C1, (0xFF & (Address_Register >> 8)) );
+		while(!(I2C1->SR1 & (1 << 7)));
+		{
+			if ((Timeout--) == 0)
+			{
+				Error_Type = 4;
+				goto exit;
+			}
+		}
+
+		I2C_SendData(I2C1, (0xFF & Address_Register));
+		while(!(I2C1->SR1 & (1 << 7)));
+		{
+			if ((Timeout--) == 0)
+			{
+				Error_Type = 5;
+				goto exit;
+			}
+		}
+
+	}
+
+
+  else
+  {
+	  I2C_SendData(I2C1, (0xFF & Address_Register));
+	  while(!(I2C1->SR1 & (1 << 7)));
+	  {
+		  if ((Timeout--) == 0)
+		  {
+			  Error_Type = 6;
+			  goto exit;
+		  }
+	  }
+  }
+
+  I2C_SendData(I2C1, *Data);
+  while(!I2C_CheckEvent(I2C1,I2C_EVENT_MASTER_BYTE_TRANSMITTED));
+  {
+	  //   if ((Timeout--) == 0)
+	  {
+		  Error_Type = 7;
+		  goto exit;
+	  }
+  }
+
+  exit:
+  I2C_GenerateSTOP(I2C1, ENABLE);
+  return Error_Type;
+}
+
+int OV7670_I2C_Read(uint8_t Address_Slave, uint16_t Address_Register, uint8_t* Data, uint8_t Length)
+{
+	uint32_t Timeout = 0x7FFFFF;
+	uint8_t Error_Type = 0;
+	while(I2C_GetFlagStatus(I2C1, I2C_FLAG_BUSY));
+	I2C_GenerateSTART(I2C1, ENABLE);
+	while(!I2C_CheckEvent(I2C1,I2C_EVENT_MASTER_MODE_SELECT));
+	{
+		if ((Timeout--) == 0)
+		{
+			Error_Type = 1;
+			goto exit;
+		}
+	}
+
+	I2C_Send7bitAddress(I2C1, Address_Slave, I2C_Direction_Transmitter);
+
+	while(!(I2C1->SR1 & (1 << 1))); // check ADDR bit
+	{
+		if ((Timeout--) == 0)
+		{
+			Error_Type = 2;
+			goto exit;
+		}
+	}
+
+	while(!(I2C1->SR2 & (1 << 2)));   // check TRA bit
+	{
+		if ((Timeout--) == 0)
+		{
+			Error_Type = 3;
+			goto exit;
+		}
+	}
+
+	if(Length == TWO_BYTE_Address_Register)
+	{
+		I2C_SendData(I2C1, (0xFF & (Address_Register >> 8)) );
+		while(!(I2C1->SR1 & (1 << 7)));
+		{
+			if ((Timeout--) == 0)
+			{
+				Error_Type = 4;
+				goto exit;
+			}
+		}
+
+		I2C_SendData(I2C1, (0xFF & Address_Register));
+		while(!(I2C1->SR1 & (1 << 7)));
+		{
+			if ((Timeout--) == 0)
+			{
+				Error_Type = 5;
+				goto exit;
+			}
+		}
+	}
+
+	else
+	{
+		I2C_SendData(I2C1, (0xFF & Address_Register));
+		while(!(I2C1->SR1 & (1 << 7)));
+		{
+			if ((Timeout--) == 0)
+			{
+				Error_Type = 6;
+				goto exit;
+			}
+		}
+	}
+
+	I2C_GenerateSTOP(I2C1, ENABLE);
+	I2C_GenerateSTART(I2C1, ENABLE);
+
+	while(!I2C_CheckEvent(I2C1,I2C_EVENT_MASTER_MODE_SELECT));
+	{
+		if ((Timeout--) == 0)
+		{
+			Error_Type = 7;
+			goto exit;
+		}
+	}
+
+	I2C_Send7bitAddress(I2C1, Address_Slave, I2C_Direction_Receiver);
+	while(!I2C_CheckEvent(I2C1, I2C_EVENT_MASTER_RECEIVER_MODE_SELECTED)); // check ADDR bit
+	{
+		if ((Timeout--) == 0)
+		{
+			Error_Type = 8;
+			goto exit;
+		}
+	}
+
+	I2C_AcknowledgeConfig(I2C1, DISABLE);
+	I2C_GenerateSTOP(I2C1, ENABLE);
+
+	while(!I2C_CheckEvent(I2C1, I2C_EVENT_MASTER_BYTE_RECEIVED));
+	{
+		if ((Timeout--) == 0)
+		{
+			Error_Type = 10;
+			goto exit;
+		}
+  }
+	*Data = I2C_ReceiveData(I2C1);
+	I2C_AcknowledgeConfig(I2C1, ENABLE);
+	return Error_Type;
+
+	exit:
+	I2C_GenerateSTOP(I2C1, ENABLE);
+	return Error_Type;
+}
+int camera_read_reg(uint8_t reg, uint8_t* data)
+{
+	return OV7670_I2C_Read(0x42, (uint16_t) reg, data, ONE_BYTE_Address_Register);
+}
+
+int camera_write_reg(uint8_t reg, uint8_t* data)
+{
+	return OV7670_I2C_Write(0x43, (uint16_t) reg, data, ONE_BYTE_Address_Register);
+}
+
+int camera_config()
+{
+ int Error_Type = 0;
+ uint8_t data = 0;
+ sprintf(&tempBuff[0],"CAMERA CONFIGURING\r\n");send(&tempBuff[0]);
+
+
+ Error_Type = camera_read_reg(0x12, &data); //Reset all registers
+  if(Error_Type < 0)
+  Error_Typeurn Error_Type;
+ Delay(0xFFFF);
+ data = 0x80;
+ Error_Type = camera_write_reg(0x12, &data);
+  if(Error_Type < 0)
+  Error_Typeurn Error_Type;
+ Delay(0xFFFF);
+ Error_Type = camera_read_reg(0x12, &data); //output format to qcif
+  if(Error_Type < 0)
+  Error_Typeurn Error_Type;
+ Delay(0xFFFF);
+ data = 0xA;               //yuv enabled
+ Error_Type = camera_write_reg(0x12, &data);
+  if(Error_Type < 0)
+  Error_Typeurn Error_Type;
+ Delay(0xFFFF);
+ Error_Type = camera_read_reg(0x11, &data); //Set PCLK
+  if(Error_Type < 0)
+  Error_Typeurn Error_Type;
+ Delay(0xFFFF);
+ data = 0x8;
+ Error_Type = camera_write_reg(0x11, &data);
+  if(Error_Type < 0)
+  Error_Typeurn Error_Type;
+ Delay(0xFFFF);
+ Error_Type = camera_read_reg(0x04, &data); //Set qqcif
+  if(Error_Type < 0)
+  Error_Typeurn Error_Type;
+ Delay(0xFFFF);
+ data = 0x28;
+ Error_Type = camera_write_reg(0x04, &data);
+  if(Error_Type < 0)
+  Error_Typeurn Error_Type;
+ Delay(0xFFFF);
+
+ Error_Type = camera_read_reg(0x3A, &data); //Set manual UV values
+  if(Error_Type < 0)
+  Error_Typeurn Error_Type;
+ Delay(0xFFFF);
+ data = 0x1C;
+ Error_Type = camera_write_reg(0x3A, &data);
+  if(Error_Type < 0)
+  Error_Typeurn Error_Type;
+ Delay(0xFFFF);
+
+ Error_Type = camera_read_reg(0x67, &data); //Set manual U value
+  if(Error_Type < 0)
+  Error_Typeurn Error_Type;
+ Delay(0xFFFF);
+ data = 0xFF;
+ Error_Type = camera_write_reg(0x67, &data);
+  if(Error_Type < 0)
+  Error_Typeurn Error_Type;
+ Delay(0xFFFF);
+
+ Error_Type = camera_read_reg(0x68, &data); //Set manual V value
+  if(Error_Type < 0)
+  Error_Typeurn Error_Type;
+ Delay(0xFFFF);
+ data = 0x0;
+ Error_Type = camera_write_reg(0x68, &data);
+  if(Error_Type < 0)
+  Error_Typeurn Error_Type;
+ Delay(0xFFFF);
+//      Error_Type = camera_read_reg(0x40, &data); //Set out put data range
+//   if(Error_Type < 0)
+//   Error_Typeurn Error_Type;
+//  Delay(10);
+//  data = 0xC0;
+//  Error_Type = camera_write_reg(0x40, &data);
+//   if(Error_Type < 0)
+//   Error_Typeurn Error_Type;
+//  Delay(10);
+//
+//  Error_Type = camera_read_reg(0x17, &data); //Set HSTART 0
+//   if(Error_Type < 0)
+//   Error_Typeurn Error_Type;
+//  Delay(10);
+//  data = 0x14;
+//  Error_Type = camera_write_reg(0x17, &data);
+//   if(Error_Type < 0)
+//   Error_Typeurn Error_Type;
+//  Delay(10);
+//  Error_Type = camera_read_reg(0x18, &data); //Set HSTOP 40
+//   if(Error_Type < 0)
+//   Error_Typeurn Error_Type;
+//  Delay(10);
+//  data = 0x3C;
+//  Error_Type = camera_write_reg(0x18, &data);
+//   if(Error_Type < 0)
+//   Error_Typeurn Error_Type;
+//  Delay(10);
+// //
+//  Error_Type = camera_read_reg(0x19, &data); //Set VSTART 20  We cxan set number of raws
+//   if(Error_Type < 0)
+//   Error_Typeurn Error_Type;
+//  Delay(10);
+//  data = 0x14;
+//  Error_Type = camera_write_reg(0x19, &data);
+//   if(Error_Type < 0)
+//   Error_Typeurn Error_Type;
+//  Delay(10);
+//  Error_Type = camera_read_reg(0x1A, &data); //Set VSTOP 40
+//   if(Error_Type < 0)
+//   Error_Typeurn Error_Type;
+//  Delay(10);
+//  data = 0x28;
+//  Error_Type = camera_write_reg(0x1A, &data);
+//   if(Error_Type < 0)
+//   Error_Typeurn Error_Type;
+//  Delay(10);
+
+sprintf(&tempBuff[0],"CAMERA CONFIGURING DONE\r\n");send(&tempBuff[0]);
+Error_Typeurn Error_Type;
+}
+
+#define ROW 72
+#define COLUMNS 80  //I got only 80 columns instead of 88 columns
+#define BYTESPERPIX 2
+void DCMI_Configure(void)
+{
+  DCMI_InitTypeDef DCMI_InitStructure;
+  DMA_InitTypeDef  DMA_InitStructure;
+NVIC_InitTypeDef NVIC_InitStructure;
+  /* GPIOD Periph clock enable */
+ RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_DCMI, ENABLE);
+        RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
+ RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+ RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
+ RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
+ RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);
+
+        RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2, ENABLE);
+
+  /* Configure PD12, PD13, PD14 and PD15 in output pushpull mode */
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12 | GPIO_Pin_13| GPIO_Pin_14| GPIO_Pin_15;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_Init(GPIOD, &GPIO_InitStructure);
+
+   /* B7: VSYNC*/
+    GPIO_PinAFConfig(GPIOB, GPIO_PinSource7, GPIO_AF_DCMI);
+    /* A4: HSYNC*/
+    GPIO_PinAFConfig(GPIOA, GPIO_PinSource4, GPIO_AF_DCMI);
+    /* A6: PCLK*/
+    GPIO_PinAFConfig(GPIOA, GPIO_PinSource6, GPIO_AF_DCMI);
+    /* C6: data0*/
+    GPIO_PinAFConfig(GPIOC, GPIO_PinSource6, GPIO_AF_DCMI);
+    /* C7: data1*/
+    GPIO_PinAFConfig(GPIOC, GPIO_PinSource7, GPIO_AF_DCMI);
+    /* C8: data2*/
+    GPIO_PinAFConfig(GPIOC, GPIO_PinSource8, GPIO_AF_DCMI);
+    /* C9: data3*/
+    GPIO_PinAFConfig(GPIOC, GPIO_PinSource9, GPIO_AF_DCMI);
+    /* E4: data4*/
+    GPIO_PinAFConfig(GPIOE, GPIO_PinSource4, GPIO_AF_DCMI);
+    /* B6: data5*/
+    GPIO_PinAFConfig(GPIOB, GPIO_PinSource6, GPIO_AF_DCMI);
+    /* E5: data6*/
+    GPIO_PinAFConfig(GPIOE, GPIO_PinSource5, GPIO_AF_DCMI);
+    /* E6: data7*/
+    GPIO_PinAFConfig(GPIOE, GPIO_PinSource6, GPIO_AF_DCMI);
+ /* DCMI GPIO configuration */
+
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
+    GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
+    GPIO_Init(GPIOC, &GPIO_InitStructure);
+
+    GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
+    GPIO_Init(GPIOE, &GPIO_InitStructure);
+
+
+      /* DCMI configuration */
+
+      DCMI_InitStructure.DCMI_CaptureMode = DCMI_CaptureMode_SnapShot;
+      DCMI_InitStructure.DCMI_ExtendedDataMode = DCMI_ExtendedDataMode_8b;
+      DCMI_InitStructure.DCMI_CaptureRate = DCMI_CaptureRate_All_Frame;
+      DCMI_InitStructure.DCMI_VSPolarity = DCMI_VSPolarity_High;
+      DCMI_InitStructure.DCMI_HSPolarity = DCMI_HSPolarity_Low;
+      DCMI_InitStructure.DCMI_PCKPolarity = DCMI_PCKPolarity_Rising;
+      DCMI_InitStructure.DCMI_SynchroMode = DCMI_SynchroMode_Hardware;
+
+
+
+      DCMI_Init(&DCMI_InitStructure);
+
+
+     //DCMI_ITConfig(DCMI_IT_VSYNC, ENABLE);
+     //DCMI_ITConfig(DCMI_IT_LINE, ENABLE);
+     //DCMI_ITConfig(DCMI_IT_FRAME, ENABLE);
+     //DCMI_ITConfig(DCMI_IT_OVF, ENABLE);
+     //DCMI_ITConfig(DCMI_IT_ERR, ENABLE);
+
+
+
+      /* Configures the DMA2 to transfer Data from DCMI */
+
+      /* DMA2 Stream1 Configuration */
+      DMA_DeInit(DMA2_Stream1);
+
+      DMA_StructInit(&DMA_InitStructure);
+
+      DMA_InitStructure.DMA_Channel = DMA_Channel_1;
+      DMA_InitStructure.DMA_PeripheralBaseAddr =  (uint32_t)(&DCMI->DR);
+      DMA_InitStructure.DMA_Memory0BaseAddr =  (uint32_t)frame_buffer;
+      DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
+      DMA_InitStructure.DMA_BufferSize = ROW*COLUMNS*BYTESPERPIX/4;/* size of image in bytes/4 */
+DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+      DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+      DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Word;
+      DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Word;
+      DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
+      DMA_InitStructure.DMA_Priority = DMA_Priority_VeryHigh;
+      DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Enable;
+      DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;
+      DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
+      DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
+      DMA_Init(DMA2_Stream1, &DMA_InitStructure);
+      DMA_ITConfig(DMA2_Stream1, DMA_IT_TC, ENABLE);
+      DMA_ITConfig(DMA2_Stream1, DMA_IT_TE, ENABLE);
+
+      /* DMA2 IRQ channel Configuration */
+
+NVIC_InitStructure.NVIC_IRQChannel = DMA2_Stream1_IRQn;
+NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+NVIC_Init(&NVIC_InitStructure);
+
+NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
+NVIC_InitStructure.NVIC_IRQChannel = DCMI_IRQn;
+NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
+NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;
+NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+NVIC_Init(&NVIC_InitStructure);
+
+DMA_Cmd(DMA2_Stream1, ENABLE);
+
+DCMI_Cmd(ENABLE);
+DCMI_CaptureCmd(ENABLE);
+
+}
+
+void DMA2_Stream1_IRQHandler(void)
+{
+ static  int K;
+  //Test on DMA2 Channel1 Transfer Complete interrupt
+  if(DMA_GetITStatus(DMA2_Stream1,DMA_IT_TCIF1) ==  SET)
+  {
+  frame_flag = 1;//when frame_flag =1,all the data will be send through serial port in main function while loop
+    DMA_ClearITPendingBit(DMA2_Stream1,DMA_IT_TCIF1);
+  }
+  if(DMA_GetITStatus(DMA2_Stream1,DMA_IT_TEIF1) ==  SET)
+  {
+    sprintf(&tempBuff[0]," Dma error \r\n");send(&tempBuff[0]);
+    DMA_ClearITPendingBit(DMA2_Stream1,DMA_IT_TEIF1);
+  }
+}
+
+void DCMI_IRQHandler(void)
+{
+ static volatile int line,col,i,j = 0;
+    if(DCMI_GetFlagStatus(DCMI_FLAG_FRAMERI) == SET)
+    {
+   sprintf(&tempBuff[0],"Frame got\r\n");send(&tempBuff[0]);
+   DCMI_ClearFlag(DCMI_FLAG_FRAMERI);
+    }
+   if(DCMI_GetFlagStatus(DCMI_FLAG_OVFRI) == SET)
+    {
+   sprintf(&tempBuff[0],"overflow\r\n");send(&tempBuff[0]);
+   DCMI_ClearFlag(DCMI_FLAG_OVFRI);
+    }
+
+}
+
+int main()
+{
+	SystemInit();
+	SystemCoreClockUpdate();
+
+	while (1)
+	  {
+	  if( frame_flag == 1)
+	  {
+	    show_image();
+	    frame_flag = 0;
+	  }
+	  }
+}
+
+void show_image(void)
+	  {
+	   for( K =0;K< WIDTH*HEIGHT*BYTES_PER_PIXEL/4;K++)
+	   {
+	    {
+	    sprintf(&tempBuff[0],"%d \n",frame_buffer[4*K+1]);send_no_new_line(&tempBuff[0]);
+	    sprintf(&tempBuff[0],"%d \n",frame_buffer[4*K+3]);send_no_new_line(&tempBuff[0]);
+	    }
+	    if ((K+1)%40 == 0 )
+	    {
+	     sprintf(&tempBuff[0],";\r\n");send(&tempBuff[0]);
+	    }
+	   }
+	  }

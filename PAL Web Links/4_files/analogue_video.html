@@ -1,0 +1,471 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0048)http://www.doom9.org/capture/analogue_video.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+  
+  <title>analogue video</title>
+<link href="doom9.css" type="text/css" rel="stylesheet">
+<script src="frameset(1).js" type="text/javascript"></script><style type="text/css"></style>
+</head>
+<body marginwidth="0" marginheight="0">
+<h1>9 Analogue video</h1>
+This section goes a bit deeper into the world of analogue video. This
+is meant
+for people who want to have a more detailed description of analogue
+video as given in section <font color="#ff0000">3</font>
+(the introduction).
+<h2>9.1 Analogue video signals</h2>
+<p>
+A <b> <i> video signal</i></b> is an electrical voltage that
+fluctuates over time.
+These fluctuations are interpreted by a TV set while an electron beam
+is zigzagging across the screen to draw a picture, line by line. This
+is also known as scanning, and a single line as a <b><i>scan line</i></b>.
+The shape
+of the signal fluctuations tell the TV how bright a certain spot on the
+screen should be&nbsp; (<b><i>luma or Y</i></b>) and what color it
+should have
+(<b><i>chroma or C</i></b>).<br>
+When a pulse of a certain shape in the signal occurs, the TV
+knows a line has ended and that the beam should travel back to
+the other edge of the screen to start drawing a new one. This is called
+<b><i>horizontal
+retrace</i></b>; the pulse is
+known as <b><i>horizontal sync</i></b>.
+While it is traveling back the beam is
+switched off so you don’t see the trace. During the part of the video
+signal
+at which this is happening is called <b><i>horizontal blanking</i></b>
+or <b><i>horizontal
+delay</i></b>. For
+each video line coming into a TV, only about 5/6th is actually being
+drawn and
+about the first 1/6th of
+the total time is spent traveling back to the starting position. During
+the horizontal blanking, another synchronizing signal is included
+called <b><i>color
+burst</i></b>.
+It contains information needed to decode the color in the part of the
+line you do see. A video source like a VCR produces an endless string
+of
+video lines.</p>
+<p>A specially patterned video line, <b> <i> vertical sync</i></b>,
+indicates that a
+picture
+is finished. At this point the beam is located at the bottom of the
+screen and has to travel up again to be able to begin drawing the next
+picture. With the electronics of the first TV's this would take some
+time. This time interval is known as the <b><i>vertical retrace</i></b>
+time. During this time, analogue video line signals will
+keep coming in at regular intervals
+from the TV tuner or the VCR, but the beam is switched off, so these
+lines are not drawn on the screen. In the digital age, all kinds of
+extra information like teletext is digitally encoded in these
+video lines. This
+group of lines is known as the <b><i>vertical blanking interval</i></b>
+area (or <i>VBI</i>abbreviated)
+and the encoded data as <b><i>VBI data</i></b>. The lines that result
+in the picture
+lines are called <b><i>active scan lines</i></b>.<br>
+</p>
+<table border="0" width="100%">
+  <tbody>
+    <tr>
+      <td width="50%">
+      <p align="center"><img alt="interlaced" src="interlace1.jpg" width="750" height="525"></p>
+      </td>
+    </tr>
+    <tr>
+      <td align="center" width="50%">figure 1: Interlaced scanning
+system (source: <a href="http://dbserv.maxim-ic.com/appnotes.cfm/appnote_number/734">Composite/CVBS
+Interface</a>)</td>
+    </tr>
+  </tbody>
+</table>
+<p>&nbsp;</p>
+<table border="0" width="100%">
+  <tbody><tr>
+    <td width="100%" align="center"><img alt="" src="syncpic.jpg" width="750" height="495"></td>
+  </tr>
+  <tr>
+    <td width="100%" align="center">figure 2: illustration of the
+waveform</td>
+  </tr>
+</tbody></table>
+<p>Figure 2 shows a full 625 line PAL frame showing the two fields of a BBC
+broadcast including horizontal and vertical blanking areas.
+The yellow vertical bar represents the horizontal sync signal that is
+present in all video lines; the horizontal yellow/black lines the
+vertical sync lines that separate the fields; the red bars the
+color burst and the green bar the <b><i>Teletext area</i></b> that can
+be part of the VBI area. Other digital signals that may be present in
+the VBI area like
+<b><i> closed caption</i></b> and <i> <b>Video Program System</b></i>
+(or <i> <b>VPS</b></i>
+abbreviated) are not shown. A <b><i>Wide Screen Signal</i></b> (or <i><b>WSS</b></i>
+abbreviated; the white dashed line) is included in the first field, but
+that is
+just for illustration.</p>
+<table border="0" width="100%">
+  <tbody>
+    <tr>
+      <td align="center" width="100%"><img alt="waveform" src="waveform.jpg" width="563" height="380"></td>
+    </tr>
+    <tr>
+      <td align="center" width="100%">figure 3: a typical waveform of a
+NTSC composite video signal (source: <a href="http://dbserv.maxim-ic.com/appnotes.cfm/appnote_number/734">Composite/CVBS
+Interface</a>)</td>
+    </tr>
+  </tbody>
+</table>
+<p>Figure 3 shows the waveform of a NTSC scan line. In the
+active part of the signal, a low signal results in the scan line being
+black while a high signal results in it being white. A value in between
+results in a grey line. The signal in the example would have resulted
+in a horizontal white line being drawn. To have a small black dot in
+the middle of this line, the signal would have to dip rapidly to black
+level and up again. The faster the dip, the smaller the dot would
+be.&nbsp; This brings us to another point: to show fine detail, the
+signal needs to be able to change rapid. Rapid changes in a signal
+equal high frequencies, since frequency is another word for changes per
+time unit.
+</p>
+<p>This did give some problems when color was added later. There have been
+various solutions for it, but the basic principle was the same: a
+single high frequency was singled out and the color information was
+superimposed (modulated) on it. This frequency was chosen so high that
+if the signal was watched on a black and white TV, the color
+information would only distort very fine details which most people
+would not notice. This single frequency is called the Chrominance
+subcarrier frequency. NTSC chose 3.58 MHz and PAL 4.43 MHz.<br>
+In a color TV, this single frequency is filtered out and processed
+separately by a process called Y/C separation. To decode the color
+information, a reference signal is included in the horizontal blanking
+part of the scan line. This reference signal is called the color burst
+and can be seen in figure 4.&nbsp;
+</p>
+<table border="0" width="100%">
+  <tbody>
+    <tr>
+      <td align="center" width="100%"><img alt="" src="images-colorburst.jpg"></td>
+    </tr>
+    <tr>
+      <td align="center" width="100%">figure 4: the color burst (source: <a href="http://dbserv.maxim-ic.com/appnotes.cfm/appnote_number/734"><font face="Arial, Helvetica, sans-serif">Composite/CVBS
+Interface</font></a><font face="Arial, Helvetica, sans-serif">)</font></td>
+    </tr>
+  </tbody>
+</table>
+<p> The hue of the color is determined by the
+phase difference between the color burst and the color subcarrier. The
+amplitude determines the saturation. For a more elaborate explanation
+we refer to the links in the reference section.
+</p>
+<p>Depending on the quality of the filter doing this separation, fine
+luma detail around this frequency would be damaged to some extend,
+while some luma fine detail would end up in the chroma signal and
+course color artifacts. High Y frequencies (= fine detail) are mixed
+with
+low chroma frequencies (color
+crosstalk = rainbow effects) and vice versa (luma crosstalk = dot
+crawls). Look in the <a href="http://www.doom9.org/capture/chroma_artefacts.html">Removal of chroma artefacts</a> and the references therein for a more thorough explanation
+and examples of these
+artifacts and how to get rid of them.
+</p>
+<p>References:<br>
+<a href="http://www.tek.com/Measurement/cgi-bin/framed.pl?Document=/Measurement/App_Notes/25_15215/eng/&FrameSet=television">Glossary
+of Video Terms and Acronyms</a>: A great place to start looking for
+oddball video acronyms.<br>
+<a href="http://www.snellwilcox.com/knowledgecenter/books/books/edecod.pdf">The
+Engineer's Guide Decoding &amp; Encoding</a><br>
+<a href="http://www.rcc.ryerson.ca/rta/tvtech/the_book/chapter06/index.html">Television
+Technical Theory: Analogue Video</a><br>
+<a href="http://www.rcc.ryerson.ca/rta/tvtech/the_book/appendix/index.html">Television
+Technical Theory: Appendix, The Color Encoding Process</a><br>
+<a href="http://www.geocities.com/mcpoodle43/SCC_TOOLS/DOCS/SCC_TOOLS.HTML">Scenarist
+Closed Caption Tools package</a>: Capturing closed captions with a TV
+tuner card
+and graphedit.<br>
+<a href="http://www.robson.org/capfaq/overview.html">Gary Robson's
+Closed Captioning FAQ</a>: about closed
+and open captions.<br>
+<a href="http://www.itu.int/rec/recommendation.asp?type=folders&lang=e&parent=R-REC-BT.472">ITU-R
+BT.472-3 recommendation</a>: Video-frequency characteristics of a
+television
+system to be used for the international exchange of programmes between
+countries
+that have adopted 625-line colour or monochrome systems.&nbsp;<br>
+<a href="http://www.itu.int/rec/recommendation.asp?type=folders&lang=e&parent=R-REC-BT.653">
+ITU-R BT.653-3 recommendation</a>: Teletext systems.<br>
+<a href="http://www.etsi.org/SERVICES_PRODUCTS/FREESTANDARD/home.htm">ETSI
+EN
+300 706 V1.2.1</a>: Enhanced Teletext specification<br>
+<a href="http://www.etsi.org/SERVICES_PRODUCTS/FREESTANDARD/home.htm">ETSI
+EN
+300 708 V1.2.1</a>: Television systems; Data transmission within
+Teletext<br>
+<a href="http://www.etsi.org/services_products/freestandard/home.htm">ETSI
+EN
+300 294 V1.4.1 (2003-04)</a>: About the Wide Screen Signal.<br>
+<a href="http://www.etsi.org/services_products/freestandard/home.htm">ETSI
+TR 101 233 V1.1.1 (1998-02)</a>: Television Systems: Code of practice
+for allocation of services in the Vertical Blanking Interval (VBI).<br>
+<a href="http://www.etsi.org/services_products/freestandard/home.htm">ETSI
+EN 300 231 V1.3.1 (2003-04)</a>: Television systems;Specification of
+the domestic video Programme Delivery Control system (PDC)
+</p>
+<h2>9.2 The 625/50 (PAL) and 525/60 (NTSC) timings</h2>
+<p>Depending on the frequency of the electricity mains in a country,
+two
+scan line timings have been developed: 625 lines/frame, 50 fields per
+second and 525 lines/frame, 60 fields per second. These are often
+(incorrectly) referred to as PAL and NTSC timing respectively,
+referring to the TV systems adopted by Germany and America. (Actually
+PAL and NTSC refer to the system used for color encoding, and nations
+with PAL 525/60 and NTSC 625/50 systems DO exist. But in this guide we
+will follow this incorrect habit too.)</p>
+<p><b>PAL numbers:</b></p>
+<ul>
+  <li>It takes 1 second to draw 25 frames.</li>
+  <li>One frame contains 625 lines.</li>
+  <li>One line takes 1 second / (25 x 625) = 0.000064 seconds or 64
+µs (= microseconds) to draw.</li>
+  <li>One field contains 288 active lines. The first line of field 1
+and the last line of field 2 may contain a whole picture line,&nbsp;
+only half a picture line or even be completely black. For capping
+purposes and aspect ratio calculations, the PAL frame is assumed to be
+576 lines high. If it turns out it wasn’t, you just end up with some
+black lines at the top and the bottom of the picture.</li>
+  <li>While a single scan line takes 64 µs to process, only 52
+µs is actually spent drawing a picture line. This is the
+‘official’ ITU-R BT.470-6 number. (Many analogue sources will not
+completely adhere to this, mostly resulting in capping some extra black
+pixels at the sides.)</li>
+  <li>The Chrominance subcarrier frequency is 4,433.618.75 MHz<br>
+  </li>
+</ul>
+<p><b>NTSC numbers:</b></p>
+<ul>
+  <li>It takes 1 second to draw 29.97 frames.</li>
+  <li>One frame contains 525 lines.</li>
+  <li>One line takes 1 second / (29.97 x 525) = 0.000063556 seconds or
+63.556 µs to draw.</li>
+  <li>One field contains 243 active lines. The first line of field 1
+and the last line of field 2 may contain a whole picture line, only
+half a picture line or even be completely black. Most often,&nbsp;
+these two lines will contain only half picture information.&nbsp; For
+some reasons this has caused a lot of confusion about the active area
+of
+the NTSC frame, while this did not happen for PAL. The NTSC frame
+consists of 486 lines. It contains at most 2x242.5 = 485 lines of
+picture info. However, often only 484 lines are complete. Virtually all
+capture
+devices capture only 480 lines. Presumably that is because by capping
+480,
+you can avoid both the first line of field 1 and the last line of field
+2. </li>
+  <li>For capping purposes always use 480 lines. For some aspect ratio
+calculations&nbsp; use 486 lines, and regard 480 as cropped from that.
+Forget the about the other numbers. </li>
+  <li>While a single scan line takes 63.556 µs to process by a
+TV,
+only 52.6555 µs is actually spent drawing a picture line. This is
+the ‘official’ ITU-R BT.470-6 number, which is often used by people
+dealing with digital video. There are many standards for NTSC/M, all
+giving a slightly different number for the active part of a scan line. </li>
+  <li>Assume 52.6555 µs if you need a number for calculations.
+If&nbsp; the
+analogue source used a different number, again this will result in
+capping some extra black pixels at the sides or cropping a bit off.</li>
+  <li>The Chrominance subcarrier frequency is 3,579.545 MHz<br>
+  </li>
+</ul>
+<p><b>SECAM:</b></p>
+SECAM is the French TV system. It follows the same timing as PAL above,
+but encodes the color differently. Once the Video decoder is set to the
+SECAM&nbsp; video standard, you can follow the PAL&nbsp; guides
+<p><b>PAL/M:</b></p>
+This is a TV system used in amongst others Brazil. It uses NTSC timing,
+but PAL/M
+color encoding. Once the Video decoder is set to the PAL_M video
+standard, you can follow the NTSC guides.
+<p><b>PAL-60:</b></p>
+<p>Modern European equipment can handle both 625/50 and 525/60 timings.
+It
+cannot handle NTSC color encoding. So if you use European 'NTSC
+playback' capable equipment to play back an American NTSC tape or DVD,
+they will produce a signal that
+retains the NTSC timing, but has both the color encoding and the color
+carrier frequency converted to PAL. Modern
+European TV’s understand this hybrid signal and show the video. Some
+game consoles also produce a PAL-60 signal instead of true PAL.<br>
+To capture this, you need a device that understands PAL-60. Almost all
+devices do. Unfortunately, many drivers won’t give you this option. If
+your device/driver has the option, set the Video decoder to the PAL_60
+video standard, and you can follow the NTSC guides for the rest.<br>
+<br>
+<img alt="" src="decoder.jpg" width="431" height="383"><br>
+</p>
+<p><b>NTSC 443:</b>
+</p>
+<p>NTSC 443 is another hybrid. It uses NTSC timing end color encoding,
+but the color carrier frequency has been shifted from 3.58 to 4.43 MHz,
+the PAL color carrier frequency. Some game consoles can output this.
+Once you have set the decoder to the correct video standard, you can
+follow the NTSC guides.
+</p>
+<h2>9.3 Signal types and sources
+</h2>
+<p>There are several signal types which are of interest for capturing:
+RF, Composite, S-video and Component. In this
+subsection the pros and cons will be discussed, in order decide which
+type you
+should use. Some characteristics:</p>
+<b>
+Composite/CVBS</b><br>
+<br>
+<img alt="" src="CompositeJack.jpeg" align="middle"><br>
+<br>
+Composite video carries only video information; you will need
+a separate lead for audio. All video information is present in a single
+signal. Almost any video device can produce this signal. Capture
+devices typically start by digitizing this signal and separating chroma
+and luma digitally afterwards internally. This process is called <b><i>Y/C
+separation</i></b>.
+A way of doing this most capture devices use is called <i>Comb filtering</i>.
+Unfortunately, this isn't quite
+efficient, because the two signals luma (Y) and chroma (IQ for NTSC and
+UV for PAL) overlap for (at
+least) 1 MHz. Thus high Y frequencies (= fine detail) are mixed with
+low chroma frequencies (color
+crosstalk = rainbow effects) and vice versa (luma crosstalk = dot
+crawls). Look in the <font color="#000000"><a href="http://www.doom9.org/capture/chroma_artefacts.html">Removal
+of chroma artefacts section</a></font> and the references therein for a more thorough explanation
+and examples of these
+artifacts.
+<p><b>S-video or Y/C<br>
+<br>
+</b>
+<img alt="" src="YCJack.jpg" align="middle" hspace="0"><br>
+S-video or Y/C carries the luma and chroma components as separate
+signals. Since no
+Y/C separation is needed, there will be no comb-artifacts. If it is
+possible to use
+such a
+S-video connection for capturing you should try it, because it will
+probably
+result in better quality.</p>
+<p>There are exceptions to this rule: devices that store video in
+composite form, like laser disks but do have an s-video output have to
+perform Y/C separation internally to produce this signal. If the
+internal comb filter is of lesser quality than the comb filter in your
+capture device, you would be better off using the composite video
+signal instead. So always test!</p>
+<p>A special case are VHS VCR tapes. Some people think VHS stores a
+composite signal while S-VHS stores Y and C separately on tape. This
+has
+led to people mistakenly referring to s-video outputs as S-VHS outputs.
+In fact, both formats store chroma at a lower frequency band than luma
+(color under). For normal VHS, there is a very slight overlap between
+the chroma and luma bands on tape, which was eliminated for S-VHS.
+Still, on playback both formats produce separate Y and C signals. To
+produce a composite signal, a standard VHS VCR will join these again.
+Your capture device will have to separate them again, producing the
+above mentioned artifacts.</p>
+<p>A S-VHS recorder however will keep Y and C separate, even when playing
+back normal VHS tapes. So if you can get your hands on one, use a S-VHS
+recorder even when you only want to digitize ordinary VHS tapes.</p>
+<p>A final argument for preferring s-video for grabbing lies in the way
+capture devices operate. Most devices have two
+Analogue-to-Digital-Converters (ADC). When capping analogue, only one
+of those is used. When capping Y/C however, each signal gets it's own
+ADC which increases the sample resolution and precision. There simply
+will be more data for the device to work with.</p>
+<p><b>Component variations: RGB (Europe) and Component Video YPbPr (US)</b></p>
+<table border="0" width="100%" height="239">
+  <tbody><tr>
+    <td width="50%" align="center" height="206"><img alt="" src="scart.gif" width="250" height="162"></td>
+    <td width="50%" align="center" height="206"><img alt="" src="Componentjack.jpg"></td>
+  </tr>
+  <tr>
+    <td width="50%" align="center" height="21">Component variations: RGB (Europe)</td>
+    <td width="50%" align="center" height="21"> Component Video YPbPr (US)</td>
+  </tr>
+</tbody></table>
+<p>
+Component video splits up the video information in three signals. In
+America, Component Video or YPbPr is prevalent. It is made up of the
+luma component (Y), the red
+difference sample (= R-Y = U) and blue difference sample (= B-Y = V).
+Again, there is no Y/C separation and hence no comb-artifacts.&nbsp;
+In Europe, RGB was chosen instead. It carries Red, Green and Blue as
+separate signals. (Sometimes&nbsp; it uses 4 signals, R,G,B and sync.)
+In Europe, the most common form for a RGB connector is the SCART
+connector, though RCA and BNC connectors are also found on some
+equipment. Since consumer equipment rarely can capture these signals
+and most
+analogue sources cannot output them anyway, the component signal
+types are not of interest to us.</p>
+<p>A few words about the <b> SCART connector</b>: this connector is just that, a
+connector. Depending on the device it can contain composite, s-video,
+RGB, sound and various control signals, both in and out and in any
+combination.&nbsp; Having a SCART does not imply having RGB or s-video.
+For instance, most European standard VHS VCR's have a SCART connector
+that only delivers composite and sound. Using the SCART adapter below
+will not give you s-video in that case; the result would be that the
+composite signal ends up on the Y pin of the s-video lead, resulting in
+a flickering black and white picture.<br>
+<br>
+  <img alt="SCART adapter" src="scart.gif" width="131" height="85"><br>
+<br>
+<br>
+<b>RF (Broadcast)</b><br>
+<br>
+<img alt="" src="RFConnector.jpg"></p>
+<p>
+RF is the signal used for TV broadcast. A composite video signal and
+a mono or stereo audio signal are modulated onto a radio carrier wave.
+To decode this you need a TV card. The TV card will split of
+the carrier wave and decode the audio signal. Typically, he resulting
+audio signal is fed into the line in of the sound card using an
+internal
+or external
+loop-through cable. The resulting video signal is composite and suffers
+from the same limitations.</p>
+<p>References:<a href="http://www.rcc.ryerson.ca/rta/tvtech/the_book/chapter06/index.html"><br>
+Television
+Technical Theory: Analogue Video</a><br>
+<a href="http://www.cybertheater.com/Tech_Archive/YC_Comp_Format/yc_comp_format.html">Cybertheater
+- Cybertheather - Video Signal Formats</a><br>
+<a href="http://www.cybertheater.com/Tech_Reports/Comb_Filter_Tut/guide_comb_filters.html">Cybertheater
+- Cybertheather - Guide to Comb Filters: Y/C separation</a></p>
+<hr>
+<p>
+footnotes:<br>
+(1) Closed Captioning – Service that provides decoded text information
+transmitted with the audio and video signal and displays it at the
+bottom of the
+display. See (M) NTSC EIA-608 specification. Transmitted on line 21 of
+NTSC/525
+transmissions and line 22 of PAL/625 transmissions, it contains
+subtitling
+information only. These captions show sound effects (e.g., "phone
+ringing" and "footsteps").<br>
+(2) Video Program System (VPS) and Program Delivery Control (PDC) -
+Information
+is included in the video signal to automatically control VCRs and
+overrule the
+timer if a TV program starts on a different time. Hidden in line 16.</p>
+<hr width="100%">
+<p><b>Back to <a href="http://www.doom9.org/capture/postprocessing_vdub.html">VirtualDub postprocessing</a></b>
+</p><p><b>Back to <a href="http://www.doom9.org/capture/postprocessing_avisynth.html">AviSynth postprocessing</a></b>
+</p><p><b>Back to the Index: <a href="http://www.doom9.org/capture/start.html">HOME</a></b>
+</p>
+<hr>
+<p style="font-size: 8pt;">English version last edited on: 06/13/2004 |
+First
+release: n/a | Authors: <a href="http://www.doom9.org/capture/credits.html#version4team">Version4Team</a> | Content by <a href="http://www.doom9.org/" target="_blank">Doom9.org</a></p>
+<br>
+<br>
+
+
+
+</body></html>

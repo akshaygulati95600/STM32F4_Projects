@@ -1,0 +1,74 @@
+#include <STM32F4XX.H>
+#include <STM32F4XX_RCC.H>
+#include <STM32F4XX_GPIO.H>
+#include <MATH.H>
+
+uint16_t Numbers[10] = {0x3F,0x06,0x5B,0x4F,0x66,0x6D,0x7D,0x07,0x7F,0x6F};
+
+void GPIO_Configure()
+{
+	GPIO_InitTypeDef GPIO_InitStructure;
+
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5|GPIO_Pin_6|GPIO_Pin_7 ;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5|GPIO_Pin_6|GPIO_Pin_7 ;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
+	GPIO_Init(GPIOB, &GPIO_InitStructure);
+}
+
+void Display_Number(uint32_t Data)
+{
+	uint8_t i=0;
+	uint8_t Select=0;
+	uint8_t Buffer[8];
+
+	while(Data>=0)
+	{
+		if(i==8)
+		{
+			break;
+		}
+		Buffer[7-i] = Data%10;
+		Data /= 10;
+		i++;
+	}
+
+	for(i=0;i<8;i++)
+	{
+		Select=pow(2,i);
+		GPIO_Write(GPIOB,Select);
+		GPIO_Write(GPIOA, Numbers[Buffer[7-i]]);
+		Delay(0xFFF);
+	}
+}
+
+void Delay(__IO uint32_t nCount)
+{
+  while(nCount--)
+  {
+  }
+}
+
+int main(void)
+{
+	GPIO_Configure();
+	uint32_t i=0;
+	while(1)
+	{
+		for(i=0;i<99999999;i++)
+		{
+			Display_Number(i);
+		}
+	}
+}

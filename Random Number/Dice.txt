@@ -1,0 +1,34 @@
+#include "stm32f4xx.h"
+#include "stm32f4xx_rcc.h"
+#include "stm32f4xx_rng.h"
+
+uint32_t Data;
+uint32_t Result;
+
+int main(void)
+{
+	SystemInit();
+
+	RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_RNG, ENABLE);
+	RNG_Cmd(ENABLE);
+
+	while(1)
+	{
+		Re:
+		while (RNG_GetFlagStatus(RNG_FLAG_DRDY) == RESET);
+		{
+			Data = RNG_GetRandomNumber();
+			Data = Data % 10;
+			if(Data == 0x0000 || Data == 0x0007 || Data == 0x0008 || Data == 0x0009)
+			{
+				goto Re;
+			}
+
+			else
+			{
+				Result = Data % 10;
+			}
+
+		}
+	}
+}

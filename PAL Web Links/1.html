@@ -1,0 +1,1097 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!-- saved from url=(0057)http://www.rickard.gunee.com/projects/video/pic/howto.php -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+    
+    <title>Rickard's electronic projects page - How to generate composite video signals in software using PIC.</title>
+    <meta name="Author" content="Rickard Gunee">
+    <meta name="Keywords" content="video pong tetris mechanically scanned rickard gunee richard gunie gunne PIC SX pic16f84 real time software electronic projects bluetooth gameboy">
+    <meta name="Language" content="en">
+    <meta name="Description" content="Text on how to generate composite video signals in realtime using a PIC16F84 written by Rickard Gunée.">
+    <style type="text/css" media="all">@import "http://www.rickard.gunee.com/projects/ne.css";</style>
+  <style type="text/css"></style></head>
+
+  <body>
+
+    <div id="header">
+      <center><h1><b><a href="http://www.rickard.gunee.com/projects">-- Rickard's electronic projects page --</a></b></h1></center>
+    </div>
+
+    <div id="sidebar">
+
+      <div id="menu">
+        <h4>PIC B&amp;W Video</h4>
+        <a href="http://www.rickard.gunee.com/projects/video/pic/gamesys.php" title="PIC16F84 based video Game System.">PIC Game System<br></a>
+        <a href="http://www.rickard.gunee.com/projects/video/pic/pvgs_assembly" title="Building instructions for my PIC16F84 based game system.">Building it<br></a>
+        <a href="http://www.rickard.gunee.com/projects/video/pic/pong.php" title="Pong implemented on the PIC16F84 based system.">PIC-PONG<br></a>
+        <a href="http://www.rickard.gunee.com/projects/video/pic/tetris.php" title="Tetris implemented on the PIC16F84 based system.">PIC-Tetris<br></a>
+        <a href="./1_files/1.html" title="Information on how to generate B&amp;W composite video signals in software using PIC16F84 or similar.">Howto<br></a>
+        <a href="http://www.rickard.gunee.com/projects/video/pic/faq.php" title="Frequently Asked Questions with answers, look here before you ask me!">FAQ<br></a>
+      </div>
+
+      <div id="menu">
+        <h4>SX Color Video</h4>
+        <a href="http://www.rickard.gunee.com/projects/video/sx/gamesys.php" title="SX28 based video Game System.">SX Game System<br></a>
+        <a href="http://www.rickard.gunee.com/projects/video/sx/svgs_assembly" title="Building instructions for my SX28 based game system.">Building it<br></a>
+        <a href="http://www.rickard.gunee.com/projects/video/sx/tetris.php" title="Tetris implemented on the SX28 based system.">SX-Tetris<br></a>
+        <a href="http://www.rickard.gunee.com/projects/video/sx/pong.php" title="Pong implemented on the SX28 based system.">SX-PONG<br></a>
+        <a href="http://www.rickard.gunee.com/projects/video/sx/howto.php" title="Information on how to generate COLOR composite video signals in software using SX28 or similar.">Howto<br></a>
+        <a href="http://www.rickard.gunee.com/projects/video/sx/faq.php" title="Frequently Asked Questions with answers, look here before you ask me!">FAQ<br></a>
+      </div>
+
+      <div id="menu">
+        <h4>Mechanically scanned</h4>
+        <a href="http://www.rickard.gunee.com/projects/mechscan/dualpic/gamesys.php" title="Dual PIC based mechanically scanned Game System.">Virtual Game System<br></a>
+        <a href="http://www.rickard.gunee.com/projects/mechscan/dualpic/pong.php" title="Pong implemented on the Virtual Game System.">Virtual Pong<br></a>
+        <a href="http://www.rickard.gunee.com/projects/mechscan/dualpic/tetris.php" title="Tetris implemented on the Virtual Game System.">Virtual Tetris<br></a>
+        <a href="http://www.rickard.gunee.com/projects/mechscan/dualpic/clock.php" title="A clock implemented on the Virtual Game System.">Virtual Clock<br></a>
+        <a href="http://www.rickard.gunee.com/projects/mechscan/dualpic/disp.php" title="An RS232 display implemented on the Virtual Game System.">Virtual RS232 display<br></a>
+        <a href="http://www.rickard.gunee.com/projects/mechscan/dualpic/faq.php" title="Frequently Asked Questions with answers, look here before you ask me!">FAQ<br></a>
+      </div>
+
+      <div id="menu">
+        <h4>Mixed stuff</h4>
+        <a href="http://www.rickard.gunee.com/projects/playmobile" title="My master thesis project, connecting two gameboys using bluetooth and GSM.">Playmobile<br></a>
+        <a href="http://www.rickard.gunee.com/projects/mixed/colorclock" title="A clock that show what time it is with two RGB leds using (almost) standard resistor colorcoding.">AVR Color Clock<br></a>
+        <a href="http://www.rickard.gunee.com/projects/mixed/dice" title="Simple electronic dice based on a PIC10F200.">PIC Mini Dice<br></a>
+        <a href="http://www.rickard.gunee.com/projects/mixed/links.php" title="Links to other cool pages with electronics and programming stuff.">Links<br></a>
+        <a href="http://www.rickard.gunee.com/projects/contact.php" title="How to contact me if you have questions.">Contact Info<br></a>
+        <a href="http://www.guneetech.com/shop" title="My web shop where you can buy components and PCBs etc. for my projects." target="new">Web shop<br></a>
+        <a href="http://www.rickard.gunee.com/" title="Get back to my homepage">Back<br></a>
+      </div>
+
+      <div id="menu">
+        <h4>Page Counter</h4>
+        <p>You are visitor number 449731 to my 
+How to generate composite video signals in software using PIC. 
+page since 2003-05-02.</p>
+      </div>
+
+      <div id="menu">
+        <h4>About the Layout</h4>
+        <p>This page use stylesheets, your browser should be Netscape 6, IE5 or Opera5, or better to be able show this page properly</p>
+      </div>
+    </div>
+
+      <div id="content">
+        <div id="projsection">
+          <h3>How to generate video signals in software using PIC</h3>
+          <div id="rightfloat">
+		    <table>
+		      <tbody><tr><td><a href="http://www.rickard.gunee.com/projects/video/pic/gamesys.php"><img src="./1_files/pvgs.jpg" width="240" border="1"></a></td></tr>
+              <tr><td width="240"><i>My <a href="http://www.rickard.gunee.com/projects/video/pic/gamesys.php">open source PIC-based video game system</a> that this howto is based on.</i></td></tr>
+			</tbody></table>
+          </div>
+          <p><b>Background</b><br>During the Christmas holidays 1997-1998, I started on a small project,
+          trying to generate a video signal with a PIC16C84. I had seen some video
+          clock generating video signals in software, and thought it was a quite
+          interesting idea, and wanted to take it a step further. I didn't know much
+          about video signals back then, I basically just had seen how a single scan-line
+          works. But during the spring I learned more and succeeded in making the
+          game <a href="http://www.rickard.gunee.com/projects/video/pic/pong.php">Pong</a> with a PIC16C84. I thought this was quite cool,
+          so I made it available on the Internet, and during the summer I also made the game
+          <a href="http://www.rickard.gunee.com/projects/video/pic/tetris.php">Tetris</a>. I had a lot of feedback about the games from people
+          telling me how cool it was, and from people who actually built the games. Based on
+          this feedback I
+guess that probably 200-300 people have built my games, which is
+          much more than I expected. A lot of people ask me stuff about video signals and how
+          these games can generate a video signal in real-time in software, so that's why I'm
+          writing this small piece of text about how to generate video signals in real-time.
+          Hopefully this text will help you to understand video signals and how my games work.<br>
+		  <br>
+		  <i>Note: I've written <a href="http://www.rickard.gunee.com/projects/video/sx/howto.php">a much better document</a> also describing how to generate color, it is
+		  based on my <a href="http://www.rickard.gunee.com/projects/video/sx/gamesys.php">SX28 game system</a>, SX28 is a "PIC-compatible microcontroller on steroids"
+		  (or actually they've just made a true RISC processor with CPI=1 and clocked it very fast)</i></p>
+          <p><font color="#FF0000">In this text I assume that you have some basic knowledge about
+          TV's and good knowledge in electronics and PIC programming,
+but even if you know a
+          lot of electronics and PIC micro-controllers, you
+would probably have to read it a
+          couple of times before you understand it completely. (If you don't understand this
+          text, then don't ask me about it because if you don't understand it when I explain
+          it in such detail as in this text, then it is impossible for me to make you understand
+          in a short email)</font><br></p>
+			<div id="dummybox">
+			  <!-- prevent image to floating into the next projsection -->
+			</div>		  
+        </div>
+
+        <div id="projsection">
+          <h4>Video signals</h4>
+          <p>To understand anything about generating video signals in real-time, one must know
+          how video-signals work in detail, so before we look at any code we'll have to talk
+          about video signals.</p>
+
+          <p><b>How a standard TV-set works.</b><br>
+          A standard TV-set is built with a vacuum tube, which has a phosphor screen that
+          an electron canon shoots at. When the electrons from the cannon hits the screen,
+          light is emitted from the phosphor as long as the canon shoots electrons at it,
+          and it also has a short afterglow. The electron
+beam from the electron-cannon can
+          be bent using magnets so it shoots at different parts of the screen. If this is
+          controlled so it draws horizontal lines all over the screen repeatedly, while the
+          intensity of the beam is
+controlled, an image can be drawn on the screen. The
+          screen is redrawn 25 times per second on a PAL system, but to reduce flickering
+          the image is interlaced, showing first all odd lines then all even lines, so the
+          image is partially updated 50 times per second. Thanks to the
+		  <a href="http://en.wikipedia.org/wiki/Persistence_of_vision">"persistance of vision effect"</a>
+		  of the human brain the image seems to be constant instead of flickering at 50Hz.
+		  To get color each dot on the screen
+          is divided into three colors: red, green and blue, however here we'll only discuss
+          black and white television, because that is only what is possible to generate real-time
+          in software using a PIC.<br>
+
+          </p><center>
+            <table border="0" width="500">
+              <tbody><tr>
+                <td><center><img src="./1_files/vinfo_crt.png" border="1"></center></td>
+                <td><center><img src="./1_files/vinfo_halfimage.png" border="1"></center></td>
+              </tr>
+              <tr>
+                <td><i>The electron beam drawing the
+screen</i></td>
+                <td><i>The two part images becomes one
+whole image.</i></td>
+              </tr>
+            </tbody></table>
+          </center>
+		  <p></p>
+        
+          <p><b>Different TV standards</b><br>
+          There are three major TV-standards: NTSC, SECAM and PAL. The NTSC (Short
+          for "National Television System Committe", but back in the early days of
+          TV there was problems with getting the same color over the whole picture
+          so a more evil interpretation of the letters is that it stands for "Never
+          The Same Color" ) is the American TV-standard, it has only 525 scan-lines,
+          but it has a update frequency of 30Hz. SECAM (Short for "SÉquentiel Couleur Avec Mémoire" (French for "Sequential Color With Memory"), but as the French usually want to get their own solution to
+          problems, a more evil interpretation is that it stands for "System Essentially
+          Contrary to the American Method") is the French TV-standard, it has improved
+          color stability and higher intensity resolution but with less color resolution,
+          I don't know much about that standard. The European standard is PAL (Phase
+          Alternating Lines, or as a PAL enthusiast would interpret the letters:
+          "Perfect At Last"), it has 625 lines per frame, 25 frames per second. It
+          is based on NTSC, but the color-coding has been improved by using a phase
+          shift on every other line to remove the color errors that occurred with
+          NTSC. In this document I will focus on the PAL.</p>
+
+          <p><b>The information in the video signal</b><br>
+          The image seen on the screen has different intensities. As the electron
+          beam sweeps over the screen, the intensity that should be at the position
+          of the beam, is sent as a voltage level in the video signal.. There is
+          no information in this intensity information about where the electron beam
+          is on the screen. To solve this, a synchronization pulse is sent in the
+          beginning of each line to tell the TV that the current line is finished
+          and move down the electron beam to the next line. (Like the &lt;Enter&gt;
+          key on the keyboard, when writing a text with a computer) The TV must also
+          know when a new image is coming, this is done by making a special synchronization
+          pattern. (Like the "new document" function when writing a text with a computer)
+          An image that is updated 25 times per second would be quite flickering,
+          so therefor all even lines are drawn first and then all odd, this method
+          shows 50 half images per second, making the picture have less flickering.
+          The information whether the image contains even or odd lines are sent in
+          the vertical synchronization pattern, as different patterns for odd and
+          even images. The video signal has a voltage range 0 to 1V, where 0.3V represents
+          black, and 1.0V is white (gray intensities have voltages between these
+          values). Levels close to zero represent synchronization pulses</p>
+
+          <div id="rightfloat">
+            <table border="0" cellspacing="0" cellpadding="4" width="274">
+              <tbody><tr>
+                <td valign="TOP"><img src="./1_files/vinfo_hline.png" border="1"></td>
+              </tr>
+              <tr>
+                <td valign="TOP"><i>"Oscilloscope"-picture of one scan-line</i></td>
+              </tr>
+            </tbody></table>
+          </div>
+   
+          <p><b>The scan-line</b><br>
+          The image is divided into scan-lines, it is the most important part
+          of the image since it contains the image data. The scan-lines are all 64us
+          long. First a 4us long sync pulse is sent, by setting the signal level
+to 0V,
+          to tell the TV that a new line is coming. The old TV's was kind of slow, so
+          they needed 8us after the sync-pulse to get the electron beam in position.
+          During this time the signal is kept at black level. The 8us
+delay is followed
+          by the image data for 52us, drawn on the screen from the left to the right with
+          the intensities obtained from the video signal.
+Black is represented by 0.3V
+          and as the voltage increases the intensity
+increases, with the maximum intensity
+          at 1.0v (white). See the image right to see the scan-line. <br></p>
+    
+          <p><b>Putting the scan-lines together to an image</b><br>
+          An image is built from 625scanlines, but a TV doesn't show 625 lines. Some of the
+          lines are used for synchronization pulses, and some lines are
+invisible (I don't
+          know exactly how many) because old TVs needed some time to move the electron beam
+          from the bottom of the screen. (Those invisible
+lines are nowadays used for other
+          purposes, Text-TV for example).<br>
+    
+          </p><center>
+            <table width="410">
+              <tbody><tr>
+                <td valign="TOP"><img src="./1_files/vinfo_many_hlines.png" border="1"></td>
+                </tr>
+              <tr>
+                <td valign="TOP" height="19"><i>"Oscilloscope"-picture of several scan-lines in a video signal.</i></td>
+              </tr>
+            </tbody></table>
+          </center>
+		  <p></p>
+
+          <p><b>The vertical synchronization pulses.</b><br>
+          To tell the TV that a new image is coming, a special pattern of synchronization
+          pulses is sent. Since the picture is built from two half pictures, the pattern
+          is different for the odd and even images. The vertical synchronization pulses
+          looks like this<br>
+
+          </p><center>
+            <table width="410">
+              <tbody><tr><td><center><a href="http://www.rickard.gunee.com/projects/video/pic/vinfo_vsync_big.png"><img src="./1_files/vinfo_vsync.png" border="1"></a></center></td></tr>
+              <tr>
+                <td>
+                  <i>This picture shows the different vertical synchronization pulses for the two half images.
+                  The levels are 0v and 0.3v. Numbers below signals shows scan-line number. (Click to enlarge)</i>
+                </td>
+              </tr>
+            </tbody></table>
+          </center>
+          <br>
+		  <p></p>
+        </div>
+
+        <div id="projsection">
+          <h4>How to do it in software</h4>
+          <p><b>Creating video signals in software</b>
+          Ok, this is the part about how to create the video signal in software, it will
+          not be possible to understand if you don't understand the video signal stuff
+          described above.</p>
+
+          <p>When you know how a video signal should look like, it is quite easy to generate
+          it in software, if you have unlimited processing power. The problem is that it
+          requires a lot of power from the processor, but if you don't have a powerful
+          processor it can be done anyway, by thinking before writing the code.</p>
+    
+          <p>In my code examples in this part I will use the two following macros:<br>
+          DNOP - dual nop, a macro to wait for two clock cycles, instead of two nops<br>
+          DELAY - a delay macro that delays 3 times the number of clocks in the W-register.<br></p>
+    
+          <p><b>The hardware</b><br>
+          To be able to generate a video signal, some hardware is needed to be able to
+          generate signal levels between 0 and 1V. To get a picture you'll
+need at least 3 levels.
+          The TV needs sync and black level to be able to lock on the video signal. If you want
+          more than a black image you'll need some gray or white level. Some kind of digital to 
+          analog converter is needed, with at least 2bits to get enough levels. The input impedance
+          of the composite
+input on a standard TV is 75 Ohms, and by using two resistors a 2-bit DA
+          can be created (as in the images below) thanks to voltage division.</p>
+
+          <p>
+          </p><table border="0" cellspacing="0" cellpadding="4" width="550">
+            <tbody><tr>
+              <td valign="TOP"><img src="./1_files/vinfo_da00.png" border="1"></td>
+            </tr>
+          <tr>
+            <td valign="TOP"><i>By connecting both D0 and D1 to ground, the voltage at the input
+            of the TV will be 0v (sync level) because nothing is connected to VDD.</i><br><br></td>
+          </tr>
+          <tr>
+            <td valign="TOP"><img src="./1_files/vinfo_da01.png" border="1"></td>
+          </tr>
+          <tr>
+            <td valign="TOP"><i>Connecting D1 to ground and D0 to 5v, will put the 450ohm resistor
+            in parallel with the 75ohm input impedance of the TV, and with the 900ohm resistor
+            connected in series, and thanks to voltage division
+this generates 0.33v at the
+            input of the TV, and that is quite black. (true black level is 0.3v)</i><br><br></td>
+          </tr>
+          <tr>
+            <td valign="TOP"><img src="./1_files/vinfo_da10.png" border="1"></td>
+          </tr>
+          <tr>
+            <td valign="TOP"><i>Connecting D1 to ground and D0 to 5v, will put the 900ohm resistor
+            in parallel with the 75ohm input impedance of the TV, and with the 450ohm resistor
+            connected in series, and thanks to voltage division
+this generates 0.67v at the input
+            of the TV, and that is gray.</i><br><br></td>
+          </tr>
+          <tr>
+            <td valign="TOP"><img src="./1_files/vinfo_da11.png" border="1"></td>
+          </tr>
+          <tr>
+            <td valign="TOP"><i>Connecting both D1 and D0 to 5v, will put the 450ohm resistor in
+            parallel with the 900 ohm resistor, with the 75ohm input impedance of the TV connected
+            in series, and thanks to voltage division this generates
+1.0 at the input of the TV,
+            and that is white level.</i><br><br></td>
+          </tr>
+        </tbody></table>
+        <p></p>
+    
+        <p>With this circuit, four levels can be created. The image above shows the equivalent
+        circuits for the four different levels and how the voltages are created. Resistor values
+        are not critical, you could use the more standard
+values 470 and 1k instead of 450 and 900,
+        it will still work anyway. (Little bit different intensities, but not much)</p>
+
+        <p>Ok, so now we can create sync, black, gray and white levels. That is enough to make
+        simple graphics like in my Pong and Tetris games. It is possible to create more levels
+        by using better DA converters with more levels, but if you want more bits in the DA you
+        should use a real DA instead of the resistor-based that I use in my games. (You'll also
+        need a faster processor)<br></p>
+
+        <p><b>Software vs. hardware generated video signals.</b><br>
+        On a standard video system like the graphics card in a PC, information about what to draw
+        on the screen is taken from a memory. This is done automatically in hardware.
+        Synchronization pulses are also created automatically in hardware, all the software need
+        to do is to write to the memory to tell the hardware what the image on the screen should
+        look like. Not only does this require a lot of hardware, it also requires a lot of memory,
+        on a PC graphics card there is usually several megabytes of graphics memory. In a PIC16F84
+        there is 68byte memory, and that memory should also be used for other purposes like application
+        variables and such. It is not possible to store the whole image in
+memory like on graphics
+        cards, the image has to be generated as the video signal sweeps across the screen.
+        Generating video signals in software on such a simple processor is kind of hard, only very
+        simple images can be created. The advantage is that it is quite cheap, and it is quite 
+        cool too. =)</p>
+    
+        <p><b>One scan-line, making a vertical bar.</b><br>
+        The first test I made when I started experimenting with software generated video was to
+        make a white vertical bar on the screen. By creating one scan-line
+with color information
+        gray-black-white-black-gray, and repeated the scan-line
+forever, an image could be seen on
+        a TV. The signal contained the horizontal sync-pulse, followed by a delay and then the color
+        information, so the TV could lock to the signal horizontally. (Not vertically because, there
+        was no vertically sync-pulses). I think it looked something like this:<br>
+    
+        </p><table border="0" cellspacing="0" cellpadding="4" width="500" align="Center">
+          <tbody><tr>
+            <td valign="TOP" width="50%"><img src="./1_files/vinfo_first_hline.png" border="1"></td>
+            <td valign="TOP" width="50%"><img src="./1_files/vinfo_first_screen.png" border="1"></td>
+          </tr>
+          <tr>
+            <td valign="TOP" width="50%"><i>The video signal generated by the code below would look
+            like this on an oscilloscope. The low bumps are the gray bars, and the big bump in the
+            middle is the white bar.</i></td>
+            <td valign="TOP" width="50%"><i>The video signal generated by the code below would look
+            like this if input into a TV. Two gray bars and one white bar. (The brown border is
+            supposed to be the TV)</i></td>
+          </tr>
+        </tbody></table>
+        <br>
+		<p></p>
+		
+        <p>
+        <font face="Courier"><font size="-1">
+        </font></font></p><table border="0" cellspacing="0" cellpadding="4" width="500" bgcolor="#FFFFFF" align="Center">
+          <tbody><tr>
+            <td width="35%">main:</td>
+            <td width="65%"></td>
+          </tr>
+          <tr>
+            <td width="35%">movlw COLOR_SYNC</td>
+            <td width="65%">;get sync level (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">;**** 4us sync ****</td>
+            <td width="65%"></td>
+          </tr>
+          <tr>
+            <td width="35%">movwf VIDEO_PORT</td>
+            <td width="65%">;set port value(1)</td>
+          </tr>
+          <tr>
+            <td width="35%">movlw 3</td>
+            <td width="65%">;setup delaytime</td>
+          </tr>
+          <tr>
+            <td width="35%">DELAY</td>
+            <td width="65%">;delay for 3us (9)</td>
+          </tr>
+          <tr>
+            <td width="35%">movlw COLOR_BLACK</td>
+            <td width="65%">;get black level (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">; **** 8 us delay ****</td>
+            <td width="65%"></td>
+          </tr>
+          <tr>
+            <td width="35%">movwf VIDEO_PORT</td>
+            <td width="65%">;set port value (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">movlw 7</td>
+            <td width="65%">;setup delaytime (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">DELAY</td>
+            <td width="65%">;delay for 7us (21)</td>
+          </tr>
+          <tr>
+            <td width="35%">movlw COLOR_GRAY</td>
+            <td width="65%">;get gray color (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">; **** 52 image data ****</td>
+            <td width="65%"></td>
+          </tr>
+          <tr>
+            <td width="35%">movwf VIDEO_PORT</td>
+            <td width="65%">;set port value (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">movlw 3</td>
+            <td width="65%">;setup delaytime (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">DELAY</td>
+            <td width="65%">;delay for 3us (9)</td>
+          </tr>
+          <tr>
+            <td width="35%">movlw COLOR_BLACK</td>
+            <td width="65%">;get black level (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">movwf VIDEO_PORT</td>
+            <td width="65%">;set port value (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">movlw 19</td>
+            <td width="65%">;setup delaytime (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">DELAY</td>
+            <td width="65%">;delay for 19us (57)</td>
+          </tr>
+          <tr>
+            <td width="35%">movlw COLOR_WHITE</td>
+            <td width="65%">;get white level (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">movwf VIDEO_PORT</td>
+            <td width="65%">;set port value (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">movlw 3</td>
+            <td width="65%">;setup delaytime (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">DELAY</td>
+            <td width="65%">;delay for 3us (9)</td>
+          </tr>
+          <tr>
+            <td width="35%">movlw COLOR_BLACK</td>
+            <td width="65%">;get black level (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">movwf VIDEO_PORT</td>
+            <td width="65%">;set port value (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">movlw 19</td>
+            <td width="65%">;setup delaytime (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">DELAY</td>
+            <td width="65%">;delay for 19us (57)</td>
+          </tr>
+          <tr>
+            <td width="35%">movlw COLOR_GRAY</td>
+            <td width="65%">;get gray level (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">movwf VIDEO_PORT</td>
+            <td width="65%">;set port value (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">movlw 2</td>
+            <td width="65%">;setup delaytime (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">DELAY</td>
+            <td width="65%">;delay for 2us (6)</td>
+          </tr>
+          <tr>
+            <td width="35%">DNOP</td>
+            <td width="65%">;delay for 2 clocks (2)</td>
+          </tr>
+          <tr>
+            <td width="35%">goto main</td>
+            <td width="65%">;loop forever jump (3)</td>
+          </tr>
+        </tbody></table><font face="Courier"><font size="-1">
+        </font></font>
+        <p></p>
+        <br>
+
+        <p>As you can see, the total number of clock cycles is 192 for each lap in the loop,
+        making the scan-line 64us. The timing is very important, so this is what it is all 
+        about counting clock-cycles.</p>
+
+        <p><b>The problem with poor resolution</b><br>
+        On a PIC16F84 @ 12Mhz, 3 million instructions per seconds are performed, during one
+        64us long scan-line 192 instructions can be performed, and during the 52us visible
+        part of the scan-line only 156 instructions can be performed. If the value of the
+        DA is set for each instruction during the 52us, you would get a resolution of 156
+        pixels in x-axis, that is really bad. What is even worse is that not all 156 pixels
+        can be used exactly as you want, you just can't calculate the value of one pixel in
+        one clock cycle unless it is always the same so it can be generated by a set bit
+        instruction.</p>
+    
+        <p><b>Obtaining higher resolution by shifting out data</b><br>
+        If you want to show 8 pixels black and white, stored in one byte in memory it would
+        look something like this:</p>
+    
+        <p>
+        <font face="Courier"><font size="-1">
+        </font></font></p><table border="0" cellspacing="0" cellpadding="4" width="500" bgcolor="#FFFFFF" align="Center">
+          <tbody><tr>
+            <td width="35%">movlw 8</td>
+            <td width="65%">;number of pixels is 8  (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">movwf counter</td>
+            <td width="65%">;set counter to number of pixels  (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">shiftloop:</td>
+            <td width="65%"></td>
+          </tr>
+          <tr>
+            <td width="35%">movlw COLOR_BLACK</td>
+            <td width="65%">;set default color to black  (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">rrf thedata,f</td>
+            <td width="65%">;rotate the data right, puts bit in carry  (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">skpnc</td>
+            <td width="65%">;check if carry, if not pixel remains black (1 or 2)</td>
+          </tr>
+          <tr>
+            <td width="35%">movlw COLOR_WITE</td>
+            <td width="65%">;carry was set, set color to white (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">movwf VIDEO_PORT</td>
+            <td width="65%">;set color to DA (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">decfsz counter</td>
+            <td width="65%">;decrease counter, check for zero (1 or 2)</td>
+          </tr>
+          <tr>
+            <td width="35%">goto shiftloop</td>
+            <td width="65%">;if more pixels, keep looping (2)</td>
+          </tr>
+        </tbody></table><font face="Courier"><font size="-1">
+        </font></font>
+        <center><i>This code outputs the bits of one byte to the video port. So different bitmaps can be shown on the screen</i></center>
+        <p></p>
+
+        <p>The example above uses 8 clocks per bit. At this speed, we only get 19 pixels
+        of x-resolution, and that is quite useless, but there is one nice solution to this
+        problem. The solution is to use one port as a shift register shifting out one bit
+        per clock, but as usual there is no free lunch, you'll have to sacrifice the
+        possibility to use the port for whatever you want, and it only works for black
+        and white (not gray levels). For example you can do like this:</p>
+    
+        <p>Connect the MSB of the DA is to bit 0 at PORTB and the LSB is connected to
+        some pin at PORTA. To use the PORTB as a shift register all pins have to be set
+        to outputs. (So it is hard to use it for anything else). The LSB should be set
+        high, and then one byte is placed in PORTB and is shifted out. Generating white
+        and black levels according to the byte, for example like this:</p>
+
+        <p>
+        <font face="Courier"><font size="-1">
+        </font></font></p><table border="0" cellspacing="0" cellpadding="4" width="500" bgcolor="#FFFFFF" align="Center">
+          <tbody><tr>
+            <td width="35%">movfw thedata</td>
+            <td width="65%">;set up the byte to be shifted out (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">movwf PORTB,f</td>
+            <td width="65%">;now the first bit becomes visible (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">rrf PORTB,f</td>
+            <td width="65%">;second bit is shifted out (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">rrf PORTB,f</td>
+            <td width="65%">;third bit is shifted out (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">rrf PORTB,f</td>
+            <td width="65%">;fourth bit is shifted out (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">rrf PORTB,f</td>
+            <td width="65%">;fifth bit is shifted out (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">rrf PORTB,f</td>
+            <td width="65%">;sixth bit is shifted out (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">rrf PORTB,f</td>
+            <td width="65%">;seventh bit is shifted out (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">rrf PORTB,f</td>
+            <td width="65%">;eighth bit is shifted out (1)</td>
+          </tr>
+        </tbody></table><font face="Courier"><font size="-1">
+        </font></font>
+        <center><i>This code outputs the bits of one byte to the video port, like the last example,
+        but this one is much faster, but it requires the pins to be changed.</i></center>
+        <p></p>
+
+        <div id="rightfloat">
+          <table cols="1" width="270" height="200">
+            <tbody><tr>
+              <td><img src="./1_files/vinfo_close.jpg" height="183" width="240"></td>
+            </tr>
+            <tr>
+              <td><i>The chars are only drawn on every second line as described above.</i></td>
+            </tr>
+          </tbody></table>
+        </div>
+
+        <p>The example above uses one clock per bit, giving a resolution of 156 pixels
+        if there wouldn't be any setup time. In reality there is quite a lot of setup
+        time, so just before and just after the 8 bits of graphics there will be wither
+        white or black pixels during the setup.time. In my pong game the setup time
+        can be seen when text is displayed on the screen, it is done using this method,
+        so there are big black spaces between the characters on the screen. The strings
+        are 8 charcters long, but I think it would be possible to get 10 characters on
+        the screen, each 8 pixels wide, so each pixel uses about 1.5 clocks including
+        setup. In pong, the bits to be shifted out are taken from a memory location
+        containing the
+8*8 bits = 8 byte, to be shifted out. For each line these 8 bytes
+        has to be calculated by reading the string charcters from the data-eeprom where
+        it is stored, and then get the correct bitmap from a constant lookup table in
+        code memory, and store the bitmap data in memory. Doing all this for 8 characters
+        takes a lot of time, so it is done during an entire scanline.
+The reason why the
+        text is only displayed every second scan-line is that
+the processor is calculating
+        the next line to show during the black lines in between the graphics scan-lines.</p>
+            
+        <p>Ok, so this method makes it possible to show graphics with much higher resolution,
+        but it occupies the entire PORTB during the shifting operation. At first it might seem
+        impossible to use PORTB for other stuff, but it is possible. It can easily be used as
+        an output if one pin of PORTA is used to disable the hardware attached to PORTB when
+        it is used as a shift
+register. It is also possible to be used as input when not used
+        for shifting. In my games I needed a lot of pins to connect the joystick, but connecting
+        the joystick directly to the post is hazardous, because when used as an output the
+        joystick could burn the output buffer of the port. (The joystick is a bunch of switches
+        shorting pin to ground when pushed). I solved this by using 100k pull-up resistors, and
+        1k protecting resistors. This giving a voltage close to zero, when the joystick switch is
+        short, when the joystick is read by the port, but protecting the port against shortcut
+        to ground
+when used as output when port is used as a shift register.</p>
+    
+        <p><b>The vertical synchronization.</b><br>
+        To get the TV to lock on the video signal, the vertical pulses must
+be generated.
+        It can be done by the following code:</p>
+
+        <p>
+        <font face="Courier"><font size="-1">
+        </font></font></p><table border="0" cellspacing="0" cellpadding="4" width="500" bgcolor="#FFFFFF" align="Center">
+          <tbody><tr>
+            <td width="35%">Shortsync:</td>
+            <td width="65%">; label "Shortsync", entry for short sync generator</td>
+          </tr>
+          <tr>
+            <td width="35%">movwf counter1</td>
+            <td width="65%">;set counter1 to number of shortsyncs</td>
+          </tr>
+          <tr>
+            <td width="35%">shortsync_l0:</td>
+            <td width="65%">;label "Shortsync_l0", short sync count loop entry</td>
+          </tr>
+          <tr>
+            <td width="35%">bcf porta,0</td>
+            <td width="65%">set level to synclevel (bit 1)</td>
+          </tr>
+          <tr>
+            <td width="35%">bcf portb,0</td>
+            <td width="65%">;set level to synclevel (bit 0)</td>
+          </tr>
+          <tr>
+            <td width="35%">dnop</td>
+            <td width="65%">;</td>
+          </tr>
+          <tr>
+            <td width="35%">movlw 0x1d</td>
+            <td width="65%">;</td>
+          </tr>
+          <tr>
+            <td width="35%">movwf counter2</td>
+            <td width="65%">;set counter2 to "30us"</td>
+          </tr>
+          <tr>
+            <td width="35%">nop</td>
+            <td width="65%">;</td>
+          </tr>
+          <tr>
+            <td width="35%">bsf PORTA,0</td>
+            <td width="65%">;set level to black</td>
+          </tr>
+          <tr>
+            <td width="35%">shortsync_l1</td>
+            <td width="65%">;label "Shortsync_l1", short sync delay loop</td>
+          </tr>
+          <tr>
+            <td width="35%">decfsz counter2</td>
+            <td width="65%">;do delay counting</td>
+          </tr>
+          <tr>
+            <td width="35%">goto shortsync_l1</td>
+            <td width="65%">;loop if not finished with delay</td>
+          </tr>
+          <tr>
+            <td width="35%">decfsz counter1</td>
+            <td width="65%">;count number of shortsyncs</td>
+          </tr>
+          <tr>
+            <td width="35%">goto shortsync_l0</td>
+            <td width="65%">;if more shortsyncs, keep looping</td>
+          </tr>
+          <tr>
+            <td width="35%">retlw 5</td>
+            <td width="65%">;return and set w to number of longsyncs (5 longsyncs)</td>
+          </tr>
+
+          <tr>
+            <td width="35%">vertsync:</td>
+            <td width="65%">;</td>
+          </tr>
+          <tr>
+            <td width="35%">movlw 5</td>
+            <td width="65%">;</td>
+          </tr>
+          <tr>
+            <td width="35%">btfss videostuff,0</td>
+            <td width="65%">;</td>
+          </tr>
+          <tr>
+            <td width="35%">movlw 6</td>
+            <td width="65%">;</td>
+          </tr>
+          <tr>
+            <td width="35%">call shortsync</td>
+            <td width="65%">;</td>
+          </tr>
+          <tr>
+            <td width="35%">incf videostuff</td>
+            <td width="65%">;</td>
+          </tr>
+          <tr>
+            <td width="35%">longsync:</td>
+            <td width="65%">;</td>
+          </tr>
+          <tr>
+            <td width="35%">movwf counter1</td>
+            <td width="65%">;set synccounter to number of longsyncs (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">longsync:</td>
+            <td width="65%">;label "longsync"</td>
+          </tr>
+          <tr>
+            <td width="35%">movlw 0x1d</td>
+            <td width="65%">; (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">movwf counter2</td>
+            <td width="65%">;set counter to 30us (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">bcf porta,0</td>
+            <td width="65%">;set level to sync bit 1 (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">bcf portb,0</td>
+            <td width="65%">;set level to sync bit 0 (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">longsync_l1</td>
+            <td width="65%">;label "longsync_l1", long sync delay loop</td>
+          </tr>
+          <tr>
+            <td width="35%">decfsz counter2</td>
+            <td width="65%">;do delay counting (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">goto longsync_l1</td>
+            <td width="65%">;loop if not finished with delay (3)</td>
+          </tr>
+          <tr>
+            <td width="35%">nop</td>
+            <td width="65%">;(1)</td>
+          </tr>
+          <tr>
+            <td width="35%">bsf porta,0</td>
+            <td width="65%">;set level to black (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">nop</td>
+            <td width="65%">;(1)</td>
+          </tr>
+          <tr>
+            <td width="35%">decfsz counter1</td>
+            <td width="65%">;count number of shortsyncs (1 or 2)</td>
+          </tr>
+          <tr>
+            <td width="35%">goto longsync_l0</td>
+            <td width="65%">;if more shortsyncs, keep looping (3)</td>
+          </tr>
+          <tr>
+            <td width="35%">movlw 5</td>
+            <td width="65%">;set number of shortsyncs to 5 (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">btfss videostuff,0</td>
+            <td width="65%">;check if second field (1 or 2)</td>
+          </tr>
+          <tr>
+            <td width="35%">movlw 4</td>
+            <td width="65%">;yes, do 4 shortsyncs instead (1)</td>
+          </tr>
+          <tr>
+            <td width="35%">goto shortsync</td>
+            <td width="65%">;do those short syncs</td>
+          </tr>
+          <tr>
+            <td width="35%"></td>
+          </tr>
+        </tbody></table><font face="Courier"><font size="-1">
+        </font></font>
+        <center><i>This code generates the needed sync pulses, as described earlier. It is the
+        vertsync label that is called, it calls first shortsync, then go to longsync that
+        go back to shortsync where the call returns. This is kind of messy but it saves
+        code memory =)</i></center>
+        <p></p><br>
+      </div>
+
+
+
+      <div id="projsection">
+        <h4>My games</h4>
+
+        <div id="rightfloat"><img src="./1_files/ponggame.jpg" border="1"><br><i>My Pong game in action.</i></div>
+        <p><b>My Pong game.</b><br>
+        The code in the <a href="http://www.rickard.gunee.com/projects/video/pic/pong.php">pong-game</a> is kind of messy, it was the first video
+        thing I wrote, so I learned more as I wrote it, so therefor it could probably be done more
+        efficient if it was rewritten. The game logic is mostly a lot of if-statements to keep the
+        ball inside the screen. The first lines are just white, and it is on the upper lines that
+        the game logic is performed. For all lines on the real game-field there are two kinds of
+        lines, the ones with a ball and the ones without a ball. The without a ball first shows
+        the left player if needed, then the line is black until the right player should be shown
+        (or not). Lines with a ball on are similar, with the difference that a ball should be
+        shown at the black area. Having two computed delays before and after the ball is shown
+        does this, where the delays are depending of the x-position of the ball. Since the delay
+        is quantified to 3-clock chunks, the ball moves in quite big steps in x-axis.</p><p>
+
+        </p><p>At the bottom of the screen, the score is shown. Shifting out the score with the method
+        described earlier does this. On most lines the sound routine checks if the sound is active,
+        if so it toggles the audio output.</p>
+
+        <p>All text-menus have their text stored in the data-eeprom in 8-char long strings.
+        These are shown with the shifting out method, The text is only shown on each every second
+        line because on one line the text is extracted from data eeprom and the bitmap data is
+        stored in a buffer area. On the second line it is shifted out.</p>
+
+        <div id="rightfloat"><img src="./1_files/tetris.jpg" border="1"><br><i>My Tetris game in action.</i></div>
+        <p><b>My Tetris game.</b><br>
+        The <a href="http://www.rickard.gunee.com/projects/video/pic/tetris.php">Tetris game</a> logic was first made with Borland C in DOS on a PC,
+        just to get the logic correct before it was made for PIC assembler. The blocks are stored
+        in memory in a compressed format, and then decompressed according to the
+current angle to
+        a buffer area where it is stored as relative coordinates. Three different routines can use
+        the block in the buffer area to operate on the screen buffer: Set, Clear and Test. The set
+        and clear are of course
+routines that can add or remove the block to/from a specified
+        position on the screen, and the test routine check if a block can be placed on a certain
+        position. This approach makes the game quite structured, and easier to follow than pong.
+        The output routine is quite similar to the one shifting out characters to the screen,
+        except for that this one doesn't have to be that fast and it puts black pixels between the
+        blocks, so it just shifts out the game-field to the screen, quite easy actually.</p>
+
+        <p>On most lines a music routine is called that plays a tune by switching the audio channel
+        on and off with different frequencies, this is done on all lines except the first ones where
+        the game logic is taken care of. Due to that the music isn't played on all lines it will be
+        quite distorted. The music is in a compressed format in the data-eeprom, with a tone and a
+        length stored in one byte, with tones as indexes in a frequency delay lookup table. All
+        frequencies has to be a multiple of the frequency of the scan-lines, so the frequencies
+        are not exactly correct, and this makes the music sound even worse. Even though the music
+        sound like shit I think it is quite nice that I could get music to the game. =)</p>
+
+        <p>The score is shown with the shift-out
+method, nothing special about it. There are no
+        menus in Tetris because there was no room left for that. </p>
+
+      </div>
+
+      <div id="projsection">
+        <h4>Overlay and color</h4>
+    
+        <p><b>Overlaying video onto an existing signal</b><br>
+        A lot of people have asked me about how to overlay a video signal to another, so I'll
+        briefly discuss the subject. It is quite hard to add two video signals, it require a lot
+        of hardware, but it a lot more easily to overlay graphics on a video signal if you generate
+        the graphics yourself. Instead of generating the sync-pulses, they are extracted from the
+        video signal and lock the timing in your code with the inputted sync pulses.</p>
+    
+        <p>The LM1881 sync separation chip can extract the horizontal and the vertical sync pulses
+        from a video signal, which makes things really easy. If we would like to add a small bitmap
+        in the lower right corner of the current video image, then we wait for the vertical sync pulse,
+        and after that we just could the horizontal sync-pulses until we are at the line where the
+        image should be added. Lets say the image to be added is 8x8 pixels, then
+we should add our
+        image to the following 8 lines, but only at the end. The image is added by switching away
+        the original signal and sending our own video information. The switching should be done in
+        the end of each line, so on each line we need to wait for 40-50us depending of the
+        x-position
+of the added image. When we have done this for all the lines in the bitmap, we
+        go back and wait for the vertical sync pulse, and do it all again. It becomes more
+        complicatedwhen there is more information to be added, especially with a PIC due to the
+        memory limitations.</p>
+    
+       <p> I plan to do a project on this subject, but have not had time to do so yet.</p>
+    
+       <p><b>Generating a color video signal</b><br>
+       The color coding in composite video signals is quite
+hard to understand if you don't
+       have some basic knowledge in radio electronics. I will just touch the subject briefly
+       here as it impossible to do useful color signals with PIC in software. </p>
+    
+       <p>When color television was introduced, compatibility with the old black and white
+       TV's was needed, because there were still a lot of B/W TV's around. If color TV
+       signals were input in a B&amp;W TV it should be possible to
+watch with no difference
+       to B/W video signals. To do so, a amplitude modulated color carrier signal was added
+       to the video signal, with a carrier at the frequency 4.43 MHz (PAL). The color
+       carrier actually added some noise to the image, but it was not much, but in B/W
+       televisions created after color was introduced, a color trap was added to remove the
+       color carrier.</p>
+    
+       <p>Combining the color Red, Green and Blue can generate most of the colors we can see.
+       So the video signal must contain the three colors component's intensities, and that's
+       a lot more info than in a B/W signal. The sum of all components is actually already
+       being sent as the B/W intensity information, so by also sending the color differences
+       R-G and B-G, all three colors could be extracted. But sending two color components on
+       one carrier, is that possible? Yes, it can be done if two versions of the carrier is
+       generated, if the phase is changed 90degrees. The R-G is sent with the original carrier,
+       and the B-G is sent with the phase changed. Simplified the video signal is calculated
+       like this:</p>
+       
+       <p>signal_level = (R+G+B) + (R-G)*sin(w*t) + (B-G)*cos(w*t)</p>
+
+       <div id="rightfloat">
+         <table border="0" cellspacing="0" cellpadding="4" width="420">
+           <tbody><tr>
+             <td valign="TOP"><img src="./1_files/vinfo_hline_color.png" border="1"></td>
+           </tr>
+           <tr>
+             <td valign="TOP"><i>"Oscilloscope"-picture of one scan-line in a color video signal.
+              First there is the 4us sync pulse, in the 8us delay time there is a color burst sent,
+              then the 52us of image data is sent.</i></td>
+            </tr>
+          </tbody></table>
+        </div>
+
+       <p>To be able to separate the two color components, the TV needs an oscillator that
+       runs synchronous with the oscillator in the signal generator.
+       Adding the color burst
+       to the video signal has made it possible to synchronize the oscillator. In the 8us
+       delay when the electron beam is moving to the
+next line, nothing is sent in a B/W
+       video signal. However, in a color signal, about 10 clock cycles of the color carrier
+       is sent, called the color burst,
+so the oscillator in the TV is synchronized with
+       the one in the signal
+generator. If this wouldn't be done it wouldn't be possible
+       to get correct colors. In the early ages of color television, the color burst was
+       not always enough, the oscillator was not stable, so the phase changed over the
+       screen, making people green in the face. This was a problem with the NTSC standard
+       (That's why some people joke about NTSC meaning "Never the
+Same Color"), so when
+       the PAL standard was created, they added a phase
+shift of 180 degrees every line,
+       so that phase errors would take out each other.</p>
+
+        <p>This is kinda complex to generate in realtime in software, but fortunately if we have
+        som knowledge about the TV input bandwith and rgb-relations we could simplify this to a
+        single square wave with help from some mathematics, still it would require quite a lot
+        of processorpower so it is quite useless when using a PIC, it is intersting using a
+        faster chip like the SX-chips from Ubicom. I have made versions of pong and tetris
+        generating a color composite video signal in software using SX chips, so if you want
+        to know more about color generation have a look at those projects and read 
+        <a href="http://www.rickard.gunee.com/projects/video/sx/howto.php">my document on how color generation with SX works.</a></p>
+      </div>
+
+
+<div id="projsection">
+        <h4>Emulators.</h4>
+        <p>If you plan to try generating videosignals with PIC-chips you should try to use an
+        emulator, makes it much easier. There are poeople that have developed emulators for PIC
+        processors and have implemented plugins for emulating my hardware:<br>
+        </p><li><a href="http://bellota.ele.uva.es/~jesus/pic" target="new">PIC16F84 EMULATOR</a> is an Open Source emulator by Jesus Arias. It comes with a TV-plugin that emulates my game hardware, and it also has a "logic analyzer" which can whow the timing on how the different pins change wich is a really nice feature when writing time critical software =)</li><br>
+        <li><a href="http://www.dattalo.com/gnupic/gpsim.html" target="new">GPSIM</a> is another PIC emulator with Open Source code, for which there soon will be a TV-module emulating my games.</li><br>
+        <li><a href="http://www.feertech.com/misim" target="new">Misim</a> is a platform independent emulator running in Java by Andrew Toone has created . It allows one to write plugins to to emulate different hardware, one of the example plugins is a TV emulating my game system.</li><br>
+        <p></p>
+      </div>
+
+      <div id="projsection">
+        <h4>More info about video signals.</h4>
+        <p>If you want to know more about video signals and about generating video signals in software using PIC's, check out some of these links:<br>
+        </p><li><a href="./1_files/1.html">Howto on generating video signals using PIC.</a> (Written by me)</li><br>
+        <li><a href="http://www.rickard.gunee.com/projects/video/sx/howto.php">Howto on generating video signals in COLOR using SX.</a> (Written by me) is not PIC but SX-chips are quite similar to pic so it might be interesting anyway.</li><br>
+        <li><a href="http://www.ee.washington.edu/conselec/CE/kuhn/ntsc/95x4.htm" target="new">Conventional Analog Television - An Introduction</a> by Professor Kelin J. Kuhn.</li><br>
+	<li><a href="http://dt.prohosting.com/pic/vidclock.html" target="new">Video Superimposer</a> by David.B Thomas shows how to overlay graphics to an existing video 
+signal using a PIC.</li><br>
+        <li><a href="http://www.rickard.gunee.com/projects/video/pic/videoi.zip" target="new">Documentation of Marcelo Maggi's pattern 
+generator circuit</a></li><br>
+        <li><a href="http://www.acm.uiuc.edu/sigarch/projects/breakout" target="new"> Breakout</a> by Joel Jordan is a breakoutgame inspired by my games using the same technique to generate a video signal in software. </li><br>
+        <li><a href="http://dt.prohosting.com/pic/pong.html" target="new"> David B. Thomas' Pong game</a> also using a PIC, but he used a PIC16C711 </li><br>
+        <li><a href="http://www.brouhaha.com/~eric/pic/pictock.html" target="new">Eric Smith's PIC-Tock</a> generating a video singal showing a clock using a PIC16C61</li><br>
+	<li><a href="http://www.innovativedevice.com/gamestation.htm" target="new">Cedric Beaudoin's game console  project with memory mapped graphics using an ATMEGA64 with CPLD-based hardware for phase modulation to generate color.</a></li><a href="http://www.innovativedevice.com/gamestation.htm" target="new"><br>
+        </a><li><a href="http://www.innovativedevice.com/gamestation.htm" target="new"></a><a href="http://instruct1.cit.cornell.edu/courses/ee476/video" target="new">Cornell University Electrical Engineering 476 Video Generation 
+with AVR microcontrollers is an interesting project with memory mapped graphics based on AVR microcontrollers.</a></li><br>
+        <li><a href="http://www.ugrad.physics.mcgill.ca/~beek/alienslaughter/" target="new">Alien 
+slaughter</a> 
+by John Sachs Beeckle is a game running on two PICs with a shared external RAM 
+generating a B&amp;W video signal in software</li><br>
+
+        <li><a href="http://members.chello.nl/r.dekker49/uscope/uscope_e.html" target="new">PIC12F675 based simple oscilloscope</a> generating a video signal in software, by Ronald Dekker.</li><br>
+        <li><a href="http://www.micro-examples.com/public/microex-navig/doc/089-pic-pal-tv" target="new">PAL video library</a> generating memory mapped video with a PIC18, by Bruno Gavand.</li><br>
+        <p></p>
+      </div>
+      <div id="projsection">
+         <a name="questions"></a>
+         <h4>Questions ?</h4>
+         <p>If you have questions about the games, make sure to check out the <a href="http://www.rickard.gunee.com/projects/video/pic/faq.php">FAQ </a>
+         (Frequently Asked Questions) before you <a href="http://www.rickard.gunee.com/projects/contact.php">ask me</a>.</p>
+      </div>
+      <div id="projsection">
+         <a name="copyright"></a>
+         <h4>Copyright note</h4>
+         <p>Text on how to generate video signals (C) Rickard Gunee. This is open source, use this at your own risk ! You may use the information on this page         for your own projects as long as you refer to the original author (by name and link to authors homepage), don't do it for profit         and don't hurt or harm anyone or anything with it. The author can not be held responsible for any damage caused by the         information on this and related pages.</p>
+      </div>
+      </div>
+  
+
+
+</body></html>

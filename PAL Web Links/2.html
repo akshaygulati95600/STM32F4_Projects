@@ -1,0 +1,533 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!-- saved from url=(0049)http://www.batsocks.co.uk/readme/video_timing.htm -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<style type="text/css" media="all">@import "http://www.batsocks.co.uk/layout.css";</style>
+<style type="text/css" media="print">@import "http://www.batsocks.co.uk/p_layout.css";</style>
+<script type="text/javascript" src="./2_files/cart.js"></script><style type="text/css"></style><title>Batsocks - Monochrome Composite Video</title>
+<meta name="description" content="This page has timing diagrams and information about composite video signals. It&#39;s biased towards PAL, but includes some NTSC information.">
+</head>
+<body>
+<div id="Menu">
+<p><a href="http://www.batsocks.co.uk/" title="Batsocks home page">Home</a></p>
+<p><a href="http://www.batsocks.co.uk/products/index_products.htm">Products</a></p>
+<p><a href="http://www.batsocks.co.uk/readme/index_readme.htm">Read Me</a><br><a href="http://www.batsocks.co.uk/downloads/index_downloads.htm">Downloads</a><br><a href="http://gettingby.batsocks.co.uk/">Getting By</a></p>
+<p><a href="http://www.batsocks.co.uk/links.htm" title="">Links</a><br><a href="http://www.batsocks.co.uk/about_us.htm" title="">About Us</a></p>
+<p><a class="button" href="javascript:viewcart();" title="View Basket">View&nbsp;<img src="./2_files/basket_view16.png" alt="View Basket"></a></p>
+<hr>
+<p style="font-size:small;margin-bottom:3px;"><em>Quick-links:</em></p>
+<ul class="quicklink">
+<li><a href="http://www.batsocks.co.uk/products/Other/TellyMate.htm">TellyMate</a></li>
+<ul>
+<li><a href="http://www.batsocks.co.uk/products/Other/TellyMate_UserGuide.htm">User-Guide</a></li>
+<li>
+<a href="http://www.batsocks.co.uk/products/Other/TellyMate%20Tiny.htm">TellyMate <em>Tiny</em></a><span style="font-size:90%">&nbsp;New!</span>
+</li>
+<li><a href="http://www.batsocks.co.uk/products/Shields/TellyMate%20Shield.htm">TellyMate <em>Shield</em></a></li>
+<ul>
+<li><a href="http://www.batsocks.co.uk/products/Shields/TellyMate%20Shield_GettingStarted.htm">Getting Started</a></li>
+<li><a href="http://www.batsocks.co.uk/products/Shields/TellyMate%20Shield_Examples.htm">Examples</a></li>
+</ul>
+<li><a href="http://www.batsocks.co.uk/products/Other/TellyMate%20TTL%20Kit.htm">TellyMate <em>TTL Kit</em></a></li>
+<ul><li><a href="http://www.batsocks.co.uk/products/Other/TellyMate%20TTL%20Kit_Construction.htm">Construction</a></li></ul>
+</ul>
+<li><a href="http://www.batsocks.co.uk/products/BreadMate/XMega%20PDI.htm">XMega PDI</a></li>
+<ul>
+<li>
+<a href="http://www.batsocks.co.uk/products/BreadMate/XMega%20PDI%20Vanilla.htm">Vanilla</a><img style="padding-left:4px;" src="./2_files/oshw-logo_10.png" alt="OSHW">
+</li>
+<li>
+<a href="http://www.batsocks.co.uk/products/BreadMate/XMega%20PDI%20USB.htm">USB</a><img style="padding-left:4px;" src="./2_files/oshw-logo_10.png" alt="OSHW">
+</li>
+<li>
+<a href="http://www.batsocks.co.uk/products/BreadMate/XMega%20PDI%20AV.htm">AV</a><img style="padding-left:4px;" src="./2_files/oshw-logo_10.png" alt="OSHW">
+</li>
+</ul>
+<li><a href="http://www.batsocks.co.uk/products/Other/BatSnap%20Kit.htm">BatSnap Kit</a></li>
+<ul>
+<li><a href="http://www.batsocks.co.uk/products/Other/BatSnap%20Kit_Construction.htm">Construction</a></li>
+<li><a href="http://www.batsocks.co.uk/products/Other/BatSnap_UserGuide.htm">User Guide</a></li>
+</ul>
+</ul>
+</div>
+<div id="Header">
+<div class="logobg" style="padding:0px 15px 0px 0px;float:left;"><img class="logo" width="33" height="64" src="./2_files/batsocks64.png" alt=""></div>
+<h1><a href="http://www.batsocks.co.uk/" title="Batsocks Home">Batsocks</a></h1>
+		You <i>could</i> get by without us.
+	</div>
+<div id="Content">
+<div class="articleheader"><h2>Monochrome Composite Video</h2></div>
+<p>
+The aim of this page is to contain all the basic timing information you'd need to get a microcontroller
+to to output a greyscale display for a TV via a composite video signal.<br>
+I live in the UK, hence my bias is towards PAL signals. NTSC is not too different (when talking greyscale), and where possible, I'll include relevant details.
+</p>
+<p>
+A later article/info page will probably cover methods to actually get a microcontroller to output this signal.<br>
+[edit: The resulting project, <a href="http://www.batsocks.co.uk/products/Other/TellyMate.htm" title="http://www.batsocks.co.uk/products/Other/TellyMate.htm">TellyMate</a>, and <a href="http://www.batsocks.co.uk/readme/art_SerialVideo_1.htm" title="http://www.batsocks.co.uk/readme/art_SerialVideo_1.htm">an article that describes the design</a> are now available]
+</p>
+
+<p>basics:</p>
+<ul class="nolabel">
+	<li>Uses Yellow Phono (aka RCA) connectors.</li>
+	<li>"Greyscale PAL signal" is an oxymoron (<a href="http://en.wikipedia.org/wiki/PAL" title="wiki: PAL">PAL or 'Phase Alternating Line'</a> describes the encoding of colour data).</li>
+	<li>
+<a href="http://en.wikipedia.org/wiki/Broadcast_television_system#ITU_identification_scheme" title="wiki: Broadcast Television System">"ITU System I"</a> is more accurate.</li>
+	<li>I still call it a 'black and white PAL signal'.</li>
+	<li>I've missed off loads of details (broadcast engineers : run away - you'll be horrified).</li>
+	<li>It's an old system at heart; many of it's features are to help old valve-era technology reliably display a reasonable picture.</li>
+	<li>Modern TVs have to do lots of 'munging' to display the signal on a pixel-based screen.</li>
+</ul>
+
+<p>
+My largest problem: Both of my 'fairly modern' TVs are too good. They'll take any signal that's vaguely correct and display it beautifully (Hence I can't easily work out if I've got it absolutely correct!).
+</p>
+
+<p>
+Here's the potted summary of these notes in diagram form: (see further notes below)
+</p>
+
+<div class="image_frame_A"><div class="image_frame_B">
+<div class="titled_block_multi">
+<div><img src="./2_files/Timing_PAL_FrameSignal.gif" alt="Interlaced PAL composite video signal"></div>
+<p class="caption">One frame of full interlaced monochrome PAL video</p>
+</div>
+<div class="titled_block_multi">
+<div><img src="./2_files/Timing_PAL_FrameSignal_Progressive.gif" alt="Progressive PAL composite video signal"></div>
+<p class="caption">One field of 'fake progressive' monochrome PAL video</p>
+</div>
+</div></div>
+
+
+
+
+<h2>Background</h2>
+<p>Levels:
+</p><ul class="nolabel">
+<li>0v to 1v</li>
+<li>0v : "Sync"</li>
+<li>0.3v : Black / Blank [not quite accurate for NTSC]</li>
+<li>1v : White</li>
+</ul>
+<p></p>
+
+<p>
+Signal split into contiguous 'frames'.<br>
+A frame describes a whole, single, image to display on the screen.<br>
+Each frame is further split into (contiguous) scanlines.<br>
+Each scanline is 64μs long.
+</p>
+
+<p>
+Frames:
+</p><ul class="nolabel">
+	<li>25 frames per second (NTSC: 30 [greyscale]).</li>
+    <li>625 scanlines per frame (NTSC:525)</li>
+    <li>Each frame is 2 (contiguous) fields.
+		<ul class="nolabel">
+        <li>"Field 1": image data for even  lines (yes - this is correct).</li>
+        <li>"Field 2": image data for odd lines.</li>
+        <li>Interlaced display.</li>
+		</ul>
+	</li>
+</ul>
+<p></p>
+
+<p>
+Fields:
+</p><ul class="nolabel">
+	<li>Image data within scanlines, left to right, top to bottom.</li>
+    <li>50 fields per second.</li>
+    <li>312.5 scanlines per field (NTSC:262.5).</li>
+	<li>&nbsp;</li>
+	<li>PAL: Field 1 is an even field, Field 2 is odd.</li>
+	<li>NTSC: Field 1 is an odd field, Field 2 is even. [TODO: check]</li>
+</ul>
+<p></p>
+
+<p>
+</p>
+
+<p>
+Scanlines:
+</p><ul class="nolabel">
+	<li>Some carry field/frame boundaries.</li>
+	<li>Some carry picture information.</li>
+	<li>Some carry other information.</li>
+</ul>
+<p></p>
+
+<p>
+Number of "active video data" scanlines:
+</p><ul class="nolabel">
+	<li>575 'active video data' scanlines per frame.<br>
+</li>
+	<li>287.5 'active video data' in 'even' field.<br>
+</li>
+	<li>287.5 'active video data' in 'odd' field.<br>
+</li>
+	<li>&nbsp;</li>
+	<li>On digital equipment, this is often rounded up to 576 scanlines, 288 per field.</li>
+	<li>Hence modern descriptor: 576i/50 : 576 display lines, interlaced, 50 fields per second.</li>
+	<li>(NTSC: 480i/60)</li>
+</ul>
+<p></p>
+
+
+<h2>Synchronisation</h2>
+<p>
+Enables TVs to 'lock on' to signals.<br>
+Sync signal level is '0v'.<br>
+Always a small 'quiet' 0.3v 'blank' period around sync pulses (stops old circuitry getting confused).<br>
+Areas of synchronisation known as 'blanking periods'<br>
+Originally designed as times where the electron gun in the TV was 'blanked' for the retrace back to the left/top-left of the screen.<br>
+</p>
+
+<p>
+Two sorts of blanking period:
+</p><ul class="nolabel">
+	<li>Horizontal blanking period:</li>
+	<ul>
+		<li>Sits between lines of image data.</li>
+		<li>Contains "start of line" point.</li>
+		<li>Accurate timing is crucial in getting jiggle-free images.</li>
+	</ul>
+	<li>&nbsp;</li>
+	<li>Field blanking period:</li>
+	<ul>
+		<li>Sits between fields of image data.</li>
+		<li>Tens of scanlines long.</li>
+		<li>Contains a special sequence of sync pulses.</li>
+		<li>Contains the 'start of field' point.</li>
+	</ul>
+	<li>&nbsp;</li>
+    <li>These periods overlap. (Sync pulses areas in field blanking period take precedence).</li>
+</ul>		
+<p></p>
+
+<p>
+More details below.
+</p>
+
+<p>
+The following (probably over-simplified) diagram shows how these blanking periods overlap.<br>
+In the real signal, the field blanking period covers more scanlines and there are far more scanlines in a frame!
+</p>
+<p>
+</p><div class="image_frame_A"><div class="image_frame_B"><div class="titled_block">
+<div><img src="./2_files/Timing_PAL_Frame_alternative.gif" alt="video signal blanking periods"></div>
+<p class="caption">Over-simplified diagram of blanking periods</p>
+</div></div></div>
+<p></p>
+
+
+<h2>Horizontal Blanking Period</h2>
+
+<p>
+Straddles 2 scanlines.<br>
+Contains the 'start of scanline' sync pulse.
+</p>
+<p>
+The following diagram shows a signal's voltage level over a couple of horizontal blanking periods.
+</p>
+<p>
+</p><div class="image_frame_A"><div class="image_frame_B"><div class="titled_block">
+<div><img src="./2_files/Timing_PAL_H-Blanking.gif" alt="video signal horizontal blanking"></div>
+<p class="caption">Horizontal Blanking Period</p>
+</div></div></div>
+<p></p>
+<p class="note">Note: 
+Note: Some scanlines with horizontal blanking periods fall within the Field Blanking Period. These scanlines do not carry Picture Data (they can, however, carry other data, such as teletext).
+</p>
+
+<p>
+Horizontal Blanking Period = Front-Porch + H-Sync pulse + Back-Porch<br>
+Start of H-Sync signifies start of scanline.<br>
+Many more details (rise/fall times etc.) left out here.<br>
+Back-Porch is where colour synchronisation occurs.<br>
+Back-Porch is empty for monochrome.<br>
+</p>
+
+<p>
+Timing table:
+</p><table>
+<tbody><tr>
+<th>Area</th>
+<th>PAL</th>
+<th>NTSC</th>
+</tr>
+<tr>
+<td>Whole Scanline</td>
+<td>64μs</td>
+<td>63.55μs</td>
+</tr>
+<tr>
+<td>Front Porch</td>
+<td>1.65μs</td>
+<td>1.5μs</td>
+</tr>
+<tr>
+<td>H-Sync pulse</td>
+<td>4.7μs</td>
+<td>4.7μs</td>
+</tr>
+<tr>
+<td>Back Porch</td>
+<td>5.7μs</td>
+<td>4.5μs</td>
+</tr>
+<tr>
+<td>Blanking period (total)</td>
+<td>12.05μs</td>
+<td>10.7μs</td>
+</tr>
+<tr>
+<td>'Active Display' period</td>
+<td>51.95μs</td>
+<td>52.9μs</td>
+</tr>
+</tbody></table>
+<p></p>
+<p>
+A scanline 'starts' when the H-Sync pulse starts (yes - worth repeating).<br>
+Timing of H-Sync pulse start is crucial.<br>
+Jitter on H-Sync pulse = wobbly picture (effect similar to poor video recorders from the 80's).<br>
+Length of H-Sync pulse less critical.<br>
+4μs pulse works nicely.<br>
+Most microcontroller video output seems to use 4μs H-Sync pulse.<br>
+</p>
+
+
+<h2>Field Blanking Period</h2>
+<p>
+Hides movement of electron gun trace back to top-left of screen.<br>
+Contains 'field start' datum point.
+</p>
+
+<p>
+Field Blanking Period for Odd and Even fields identical, but...
+</p><ul class="nolabel">
+	<li>Odd Field Blanking: starts at normal scanline boundary.</li>
+	<li>Even Field Blanking: starts halfway through scanline.</li>
+</ul>
+<p></p>
+
+<p>
+3 sections of pulses at start of blanking period:
+</p><ul class="nolabel">
+	<li>Pre-equalising pulses</li>
+	<li>Vertical Sync pulses</li>
+	<li>Post-equalising pulses.</li>
+</ul>
+<p></p>	
+
+<p>
+Each section lasts for 5 half-scanlines. (NTSC: 6 half-scanlines).
+</p>
+
+<p>
+Each Pre/Post-equalising half-scanline:
+</p><ul class="nolabel">
+	<li>Single short pulse</li>
+	<li>Nothing else.</li>
+</ul>
+<p></p>
+
+<p>
+Each Vertical Sync half-scanline
+</p><ul class="nolabel">
+    <li>Single broad pulse</li>
+    <li>Nothing else.</li>
+</ul>
+<p></p>
+
+<p>
+A field's 'start point' is the start of the first broad sync.
+</p>
+
+<table>
+<tbody><tr>
+<th>Duration of...</th>
+<th>PAL / NTSC</th>
+</tr>
+<tr>
+<td>Short Sync pulse</td>
+<td>2.35μs</td>
+</tr>
+<tr>
+<td>Broad Sync pulse</td>
+<td>(scanline_duration / 2) - 4.7μs</td>
+</tr>
+</tbody></table>
+
+<p>
+The 'Short Sync' pulse is exactly half the duration of the H-Sync pulse.
+</p>
+<p>
+The following diagram shows the first 15 half-scanlines in the field blanking period.
+</p><div class="image_frame_A"><div class="image_frame_B"><div class="titled_block">
+<div><img src="./2_files/Timing_PAL_FieldPulses.gif" alt="field synchronisation pulses"></div>
+<p class="caption">Field Synchronisation Pulses</p>
+</div></div></div>
+<p></p>
+<p>
+The diagram does not show the whole Field Blanking Period.<br>
+The blanking period extends for a further 18.5 (whole) scanlines.
+</p>
+
+<p>
+Info from <a href="http://www.retroleum.co.uk/PALTVtimingandvoltages.html" title="http://www.retroleum.co.uk/PALTVtimingandvoltages.html">http://www.retroleum.co.uk/PALTVtimingandvoltages.html</a>:
+</p><ul class="nolabel">
+    <li>Most TVs are happy with one single long sync-pulse in place of the 5 broad pulses.</li>
+    <li>Short pulses can be ignored (e.g. just continue with start-of-whole-scanline H-Syncs)</li>
+    <li>I've not tried this.</li>
+</ul>
+<p></p>
+
+<p>
+Indicators of incorrect field blanking:
+</p><ul class="nolabel">
+    <li>Continually Vertically rolling picture</li>
+    <li>Intermittent vertically jumping picture.</li>
+</ul>
+<p></p>
+
+<p>
+Non-interlaced (progressive) trick:
+</p><ul class="nolabel">
+    <li>Only output even fields.</li>
+    <li>Extend pre-equalising short-pulses to 6 sections (to get a whole number of scanlines in the field)</li>
+    <li>Might need to reduce number of display lines to 304</li>
+    <li>Tried, tested and recommended.</li>
+    <li>Easier than full interlacing (if you don't need that level of picture detail).</li>
+</ul>
+<p></p>
+
+<h2>
+Which areas are actually 'displayed' on the TV?
+</h2>
+
+<p>
+According to the standards...
+</p><ul class="nolabel">
+    <li>Scanlines:</li>
+	<ul class="nolabel">
+        <li>Even Fields: half-way across line 23 down to the end of line 310 are displayed.</li>
+        <li>Odd Fields: line 336 to half way across line 623 are displayed.</li>
+	</ul>
+
+    <li>Display Scanline:</li>
+	<ul class="nolabel">
+        <li>The 'Active Display Area' of a scanline is 51.95μs.</li>
+	</ul>
+</ul>
+<p></p>
+
+<p>
+Therefore 287.5 lines (288 in the digital world) per field.
+</p>
+
+<p>
+Note: The short-sync pulse half-way through line 623 should still be output.<br>
+Note: The 'never displayed' scanlines (scanlines 7-22 and 320-335) can be used to signal data, such as teletext.
+</p>
+
+<p>
+Generalised summary of 'active display area':
+</p><ul class="nolabel">
+	<li>Two fields of 288 lines, with 51.9μs per line in the 'active portion'.</li>
+</ul>
+<p></p>
+
+<p>
+<em><st>Is all of the 'active display area' actually visible?</st></em>
+No.<br>
+Depends on your TV &amp; it's settings.<br>
+'Overscan' is the part that's not shown.<br>
+There are generally accepted 'safe areas'.<br>
+</p>
+
+<p>
+Text-safe / Caption-safe area (4:3 AR), as used by the BBC:
+</p><ul class="nolabel">
+    <li>80% of active width.</li>
+    <li>80% of active lines.</li>
+</ul>
+<p></p>
+
+<p>
+Therefore:
+</p><ul class="nolabel">
+    <li>230 text-safe lines.</li>
+    <li>29 text-unsafe lines at the top.</li>
+    <li>29 text-unsafe lines at the bottom.</li>
+    <li>41.6μs centre of the "active display" in scanline is 'text-safe'.</li>
+    <li>5.2μs text-unsafe at left.</li>
+    <li>5.2μs text-unsafe at right.</li>
+</ul>
+<p></p>
+
+
+<p>
+Picky details I've not yet worked out / included on diagrams (and they probably won't matter):
+</p>
+<p>
+</p><ul class="nolabel">
+    <li>Q. Should there be a blanking period before prior to the short-sync on line 623?<br>
+</li>
+    <li>A. Yes. I think that it actually starts Front Porch_μs earlier than the colouring on the above diagram shows.<br>
+</li>
+</ul>
+<p></p>
+<p>
+</p><ul class="nolabel">
+    <li>Q. Should the 'display from half way across line 23' be half way across the scanline or halfway across the picture data?<br>
+</li>
+    <li>A. It should actually display from (32μs + HSync_μs + BackPorch_μs) - e.g. the diagram above stops the coloured area too soon.<br>
+</li>
+</ul>
+<p></p>
+<p>
+</p><ul class="nolabel">
+    <li>Q. As it stands the diagram seems to show that 58% of the top display line on the even field is visible, and only 42% on the bottom display line of the odd field. Is this right?<br>
+</li>
+    <li>A. It's actually worse than this. I believe that the top display line (23) should only show 38% of the "picture data" and the bottom display line (623) should only show 38% as well.<br>
+</li>
+</ul>
+<p></p>
+<h2>Other information</h2>
+<p>
+Timing that I actually use:
+</p>
+<ul class="nolabel">
+    <li>4μs H-Sync</li>
+    <li>2μs Short-sync</li>
+    <li>28μs Broad-sync</li>
+</ul>
+<p>Fake 'progressive signal' (as described at the end of the "Field Blanking" section).</p>
+<p>It seems to work nicely on both of my TVs and also on an old (electron beam and phosphor) 14-inch telly at my parents':
+</p><div class="image_frame_A"><div class="image_frame_B"><div class="titled_block">
+<div><img src="./2_files/Mega8 Composite Video_320.jpg" alt="Mega8 Composite Video Output"></div>
+<p class="caption">Composite Video from a Mega8</p>
+</div></div></div>
+<p></p>
+
+<h2>Links</h2>
+<p>
+<a href="http://www.pembers.freeserve.co.uk/World-TV-Standards/Line-Standards.html" title="http://www.pembers.freeserve.co.uk/World-TV-Standards/Line-Standards.html">http://www.pembers.freeserve.co.uk/World-TV-Standards/Line-Standards.html</a>
+</p>
+<p>
+<a href="http://martin.hinner.info/vga/pal.html" title="http://martin.hinner.info/vga/pal.html">http://martin.hinner.info/vga/pal.html</a>
+</p>
+<p>
+<a href="http://www.retroleum.co.uk/PALTVtimingandvoltages.html" title="http://www.retroleum.co.uk/PALTVtimingandvoltages.html">http://www.retroleum.co.uk/PALTVtimingandvoltages.html</a>
+</p>
+
+<div class="articlefooter"></div>
+<form id="viewcart" target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_cart"><input type="hidden" name="business" value="DLNDU2FDY4JTC"><input type="hidden" name="display" value="1">
+</form>
+</div>
+
+
+</body></html>

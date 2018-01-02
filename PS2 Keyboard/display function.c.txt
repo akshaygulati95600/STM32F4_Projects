@@ -1,0 +1,87 @@
+void PS2_Data_Display()
+{
+	uint8_t i;
+	for(i=0;i<8;i++)
+	{
+		Data = Data + (pow(2,i)*Buffer[i]);
+	}
+
+	Key_Status = 1;
+
+	switch(Data)
+	{
+		case 112:	Key_Status = 0;
+					break;
+
+		case 18:	Shift_Status = 1;
+					break;
+
+		case 89:	Shift_Status = 1;
+					break;
+
+		case 90:	X = 0;
+					Y++;
+					if(Y == 6)
+					{
+						Y = 0;
+					}
+
+					LCD_Set_XY(X,Y);
+					break;
+
+		case 102:	if(X == 0)
+					{
+						X = 13;
+
+						if(Y == 0)
+						{
+							Y = 0;
+						}
+
+						else
+						{
+							Y--;
+						}
+					}
+
+					else
+					{
+						X--;
+					}
+
+					LCD_Set_XY(X,Y);
+					LCD_Write_Character(' ');
+					LCD_Set_XY(X,Y);
+					break;
+
+		default:	for(i=0;i<60;i++)
+					{
+						if(Scan_Codes[i][0] == Data)
+						{
+							LCD_Write_Character(Scan_Codes[i][1]);
+						}
+					}
+
+					if(X == 13)
+					{
+						X = 0;
+					}
+
+					else
+					{
+						X++;
+					}
+
+					if(Y == 5)
+					{
+						Y = 0;
+					}
+					else
+					{
+						Y++;
+					}
+					break;
+	}
+
+	Data = 0;
+}
